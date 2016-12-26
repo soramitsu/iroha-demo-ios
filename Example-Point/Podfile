@@ -13,6 +13,7 @@ target 'Example-Point' do
   pod 'TextFieldEffects'
   pod 'PMAlertController'
   pod 'Toast-Swift'
+  pod 'IrohaSwift'
 
   target 'Example-PointTests' do
     inherit! :search_paths

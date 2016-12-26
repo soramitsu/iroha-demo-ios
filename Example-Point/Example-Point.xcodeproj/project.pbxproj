@@ -24,8 +24,6 @@
 		6DB47D411DFDD23E00C908E9 /* KeychainManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DB47D401DFDD23E00C908E9 /* KeychainManager.swift */; };
 		6DB47D441DFDD5C000C908E9 /* QRImgGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DB47D431DFDD5C000C908E9 /* QRImgGenerator.swift */; };
 		6DF0FF421E01930B00ABD179 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF411E01930B00ABD179 /* RegisterViewController.swift */; };
-		6DF0FF4E1E01997200ABD179 /* IrohaSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DA3155B1DF97C1F00C5325E /* IrohaSwift.framework */; };
-		6DF0FF541E019C0F00ABD179 /* IrohaSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 6DA3155B1DF97C1F00C5325E /* IrohaSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		6DF0FF5B1E028E8B00ABD179 /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF5A1E028E8B00ABD179 /* TransactionCell.swift */; };
 		6DF0FF5D1E0291B800ABD179 /* CheckReachablility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF5C1E0291B800ABD179 /* CheckReachablility.swift */; };
 		6DF0FF601E02945400ABD179 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF5F1E02945400ABD179 /* ColorExtension.swift */; };
@@ -62,28 +60,7 @@
 			remoteGlobalIDString = 7471C86E1D8D942300C151E8;
 			remoteInfo = IrohaSwiftTests;
 		};
-		6DF0FF551E019C0F00ABD179 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 6DA315551DF97C1F00C5325E /* IrohaSwift.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 7471C8631D8D942300C151E8;
-			remoteInfo = IrohaSwift;
-		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		6DF0FF571E019C0F00ABD179 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				6DF0FF541E019C0F00ABD179 /* IrohaSwift.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		008DB154384CEA031C6653C5 /* Pods-Example-Point.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-Point.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example-Point/Pods-Example-Point.debug.xcconfig"; sourceTree = "<group>"; };
@@ -129,7 +106,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				6DF0FF4E1E01997200ABD179 /* IrohaSwift.framework in Frameworks */,
 				33CE66E58C3C05AA1820F31A /* Pods_Example_Point.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -297,12 +273,10 @@
 				6DA315201DF979D300C5325E /* Resources */,
 				F6F070C60E4AAA2A6AEB093D /* [CP] Embed Pods Frameworks */,
 				5B80D7AFBED67862EB03BB73 /* [CP] Copy Pods Resources */,
-				6DF0FF571E019C0F00ABD179 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6DF0FF561E019C0F00ABD179 /* PBXTargetDependency */,
 			);
 			name = "Example-Point";
 			productName = "Example-Point";
@@ -642,11 +616,6 @@
 			target = 6DA315211DF979D300C5325E /* Example-Point */;
 			targetProxy = 6DA315421DF979D300C5325E /* PBXContainerItemProxy */;
 		};
-		6DF0FF561E019C0F00ABD179 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = IrohaSwift;
-			targetProxy = 6DF0FF551E019C0F00ABD179 /* PBXContainerItemProxy */;
-		};
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
@@ -764,7 +733,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 008DB154384CEA031C6653C5 /* Pods-Example-Point.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Example-Point/Example-Point.entitlements";
 				DEVELOPMENT_TEAM = YLWWUD25VZ;
@@ -780,7 +748,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4ADCDA2AE306BDC7E0564E56 /* Pods-Example-Point.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Example-Point/Example-Point.entitlements";
 				DEVELOPMENT_TEAM = YLWWUD25VZ;
