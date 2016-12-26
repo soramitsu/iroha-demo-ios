@@ -1,6 +1,0 @@
-framework module PMAlertController {
-  umbrella header "PMAlertController-umbrella.h"
-
-  export *
-  module * { export * }
-}

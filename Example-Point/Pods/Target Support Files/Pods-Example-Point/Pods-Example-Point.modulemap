@@ -1,6 +1,0 @@
-framework module Pods_Example_Point {
-  umbrella header "Pods-Example-Point-umbrella.h"
-
-  export *
-  module * { export * }
-}
