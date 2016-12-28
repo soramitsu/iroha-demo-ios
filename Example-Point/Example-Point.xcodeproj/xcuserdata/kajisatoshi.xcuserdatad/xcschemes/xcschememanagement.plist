@@ -4,6 +4,16 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>Example-Point-watch (Notification).xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>13</integer>
+		</dict>
+		<key>Example-Point-watch.xcscheme</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>12</integer>
+		</dict>
 		<key>Example-Point.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
@@ -12,6 +22,11 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
+		<key>6D4864901E135A9D00597B3C</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
 		<key>6DA315211DF979D300C5325E</key>
 		<dict>
 			<key>primary</key>
