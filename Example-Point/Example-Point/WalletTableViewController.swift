@@ -27,7 +27,7 @@ class WalletTableViewController: UITableViewController {
     
     let unit = Bundle.main.infoDictionary?["Unit"] as! String;
 
-    var labeltxt = "";
+    var labelText = "";
     var label:UILabel?
     let color = Bundle.main.infoDictionary?["AppColor"] as! String;
 
@@ -43,7 +43,7 @@ class WalletTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        labeltxt = "0 \(unit)"
+        labelTxt = "0 \(unit)"
         historyRefresh.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
         tableView.addSubview(historyRefresh)
         loadTransaction()

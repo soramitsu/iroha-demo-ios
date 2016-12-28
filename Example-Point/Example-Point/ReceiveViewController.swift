@@ -25,11 +25,11 @@ import Toast_Swift
 class ReceiveViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var accountLabel: UITextField!
-    @IBOutlet weak var property: UILabel!
-    @IBOutlet weak var qrImg: UIImageView!
-    @IBOutlet weak var pubkey: UITextField!
-    @IBOutlet weak var amountField: HoshiTextField!
-    @IBOutlet weak var headerback: UIView!
+    @IBOutlet weak var propertyLabel: UILabel!
+    @IBOutlet weak var qrImageView: UIImageView!
+    @IBOutlet weak var pubkeyTextField: UITextField!
+    @IBOutlet weak var amountTextField: HoshiTextField!
+    @IBOutlet weak var headerbackView: UIView!
     
     var qr:UIImage?
     let qrstr = "{\"account\":\"\(KeychainManager.instance.keychain["publicKey"]!)\","
@@ -44,7 +44,7 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
         self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
         self.navigationController?.topViewController!.navigationItem.title = "Receive"
         self.tabBarController?.tabBar.tintColor = UIColor.irohaGreen
-        property.text = "\(DataManager.instance.property) \(unit)"
+        propertyLabel.text = "\(DataManager.instance.propertyLabel) \(unit)"
 
 
     }
@@ -52,15 +52,15 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-        headerback.backgroundColor = UIColor.hex(hex: color, alpha: 1)
-        amountField.delegate = self
+        headerbackView.backgroundColor = UIColor.hex(hex: color, alpha: 1)
+        amountTextField.delegate = self
         NotificationCenter.default.addObserver(self, selector: #selector(changeTextField), name: NSNotification.Name.UITextFieldTextDidChange, object: nil)
 
         let pub = KeychainManager.instance.keychain["publicKey"]!
-        pubkey.text = pub
+        pubkeyTextField.text = pub
         let qrmsg = "\(qrstr)\"amount\":0}"
         qr = createQRCode(message: qrmsg)
-        qrImg.image = qr
+        qrImageView.image = qr
         
         let keyboardHeader = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
         keyboardHeader.barStyle = UIBarStyle.default
@@ -68,7 +68,7 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
         let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
         let commitButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: Selector("commitButtonTapped"))
         keyboardHeader.items = [spacer, commitButton]
-        amountField.inputAccessoryView = keyboardHeader
+        amountTextField.inputAccessoryView = keyboardHeader
         GetUserInfo()
         
         accountLabel.isUserInteractionEnabled = true
@@ -86,8 +86,8 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
                 APIManager.GetUserInfo(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
                     if (JSON["status"] as! Int) == 200 {
                         var dicarr: [Dictionary<String, AnyObject>] = (JSON["assets"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                        DataManager.instance.property = dicarr[0]["value"] as! Int
-                        self.property.text = "\(DataManager.instance.property) \(self.unit)"
+                        DataManager.instance.propertyLabel = dicarr[0]["value"] as! Int
+                        self.propertyLabel.text = "\(DataManager.instance.propertyLabel) \(self.unit)"
 
                         alertVC.dismiss(animated: false, completion: nil)
                     }else{
@@ -111,7 +111,7 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
     }
     
     func changeTextField (sender: NSNotification) {
-        if sender.object as! UITextField == amountField{
+        if sender.object as! UITextField == amountTextField{
             let text = (sender.object as! UITextField).text
             var qrmsg = ""
             if text == "" {
@@ -120,7 +120,7 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
                 qrmsg = "\(qrstr)\"amount\":\(text!)}"
             }
             qr = createQRCode(message: qrmsg)
-            qrImg.image = qr
+            qrImageView.image = qr
         }
     }
     
@@ -139,7 +139,7 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
     }
  
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if amountField.text == "" && string == "0" {
+        if amountTextField.text == "" && string == "0" {
             return false
         }
         return true
