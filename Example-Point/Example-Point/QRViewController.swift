@@ -24,7 +24,7 @@ import PMAlertController
 class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate{
     
     
-    @IBOutlet weak var cameraRegion: UIImageView!
+    @IBOutlet weak var cameraRegionImageView: UIImageView!
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer?
     var captureDevice: AVCaptureDevice?
@@ -46,7 +46,7 @@ class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        cameraRegion.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
+        cameraRegionImageView.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
         self.tabBarController?.tabBar.isHidden = true
         
         cameraSetting()
@@ -81,7 +81,7 @@ class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         }
         
         self.previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
-        self.previewLayer!.frame = self.cameraRegion.frame
+        self.previewLayer!.frame = self.cameraRegionImageView.frame
         self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
         
         self.view.layer.addSublayer(self.previewLayer!)
@@ -93,7 +93,7 @@ class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate
         self.output.metadataObjectTypes = [AVMetadataObjectTypeQRCode];
         
         self.captureSession.startRunning()
-        self.view.sendSubview(toBack: self.cameraRegion)
+        self.view.sendSubview(toBack: self.cameraRegionImageView)
         
     }
     func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {

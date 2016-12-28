@@ -23,10 +23,10 @@ import PMAlertController
 
 class RegisterViewController: UIViewController {
     
-    @IBOutlet weak var backImg: UIImageView!
+    @IBOutlet weak var backImageView: UIImageView!
     
 
-    @IBOutlet weak var nameField: HoshiTextField!
+    @IBOutlet weak var nameTextField: HoshiTextField!
     @IBOutlet weak var registerButton: UIButton!
 
     
@@ -34,7 +34,7 @@ class RegisterViewController: UIViewController {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        rotateView(targetView: backImg)
+        rotateView(targetView: backImageView)
         registerButton.layer.borderColor = UIColor.white.cgColor
         registerButton.addTarget(self, action: #selector(Register), for: .touchUpInside)
     }
@@ -49,14 +49,14 @@ class RegisterViewController: UIViewController {
         let keychain = KeychainManager.instance.keychain
         let keypair = IrohaSwift.createKeyPair()
 
-        if nameField.text != "" {
+        if nameTextField.text != "" {
             if CheckReachability(host_name: "google.com") {
                 let alertVC = PMAlertController(title: "登録中", description: "登録しています", image: UIImage(named: ""), style: .alert)
                 self.present(alertVC, animated: true, completion: {
-                    APIManager.Register(name: self.nameField.text!, pub: keypair.publicKey, completionHandler: { JSON in
+                    APIManager.Register(name: self.nameTextField.text!, pub: keypair.publicKey, completionHandler: { JSON in
                         print(JSON)
                         if (JSON["status"] as! Int) == 200 {
-                            keychain["username"] = self.nameField.text
+                            keychain["username"] = self.nameTextField.text
                             keychain["publicKey"] = keypair.publicKey
                             keychain["privateKey"] = keypair.privateKey
                             keychain["uuid"] = JSON["uuid"] as! String

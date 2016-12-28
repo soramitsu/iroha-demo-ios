@@ -1,11 +1,11 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16B2657" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -112,8 +112,8 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="backImg" destination="Mc5-0m-SEM" id="zyD-ww-utG"/>
-                        <outlet property="nameField" destination="9RD-8F-hCY" id="SEE-rp-iYR"/>
+                        <outlet property="backImageView" destination="Mc5-0m-SEM" id="veZ-0d-afz"/>
+                        <outlet property="nameTextField" destination="9RD-8F-hCY" id="BhH-g5-q3C"/>
                         <outlet property="registerButton" destination="Jlm-hu-IxQ" id="LyW-QM-M4R"/>
                     </connections>
                 </viewController>
@@ -134,7 +134,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eto-8A-W6g" id="pCZ-ae-nks">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -246,9 +246,9 @@
                     <tabBarItem key="tabBarItem" title="Send" image="tab_send" id="Fae-0B-3Oo"/>
                     <navigationItem key="navigationItem" title="Send" id="zeH-PV-FF2"/>
                     <connections>
-                        <outlet property="amountField" destination="fdr-LS-TFB" id="klW-Wr-lVt"/>
+                        <outlet property="amountTextField" destination="fdr-LS-TFB" id="QIZ-5h-7x1"/>
                         <outlet property="sendButton" destination="NF7-b1-4Xu" id="8t5-wh-uOC"/>
-                        <outlet property="toField" destination="DUn-0x-B03" id="LPO-EV-AKf"/>
+                        <outlet property="toTextField" destination="DUn-0x-B03" id="rUU-rx-cAU"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="d8e-4U-E89" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -280,7 +280,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="cameraRegion" destination="ZWH-Wf-iZZ" id="Yct-rx-Gez"/>
+                        <outlet property="cameraRegionImageView" destination="ZWH-Wf-iZZ" id="AkD-Bo-jzZ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="f8p-zj-lkG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -342,7 +342,7 @@
                                             </userDefinedRuntimeAttribute>
                                         </userDefinedRuntimeAttributes>
                                     </textField>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="96F85B43-354E-4613-AB61-07746312C388" translatesAutoresizingMaskIntoConstraints="NO" id="HhX-lD-UDx">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="1E29DE24-A2C2-4F53-AE72-24964E0441A4" translatesAutoresizingMaskIntoConstraints="NO" id="HhX-lD-UDx">
                                         <rect key="frame" x="67" y="54" width="240" height="240"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="HhX-lD-UDx" secondAttribute="height" multiplier="1:1" id="jdc-Ty-fHY"/>
@@ -414,11 +414,11 @@
                     <navigationItem key="navigationItem" id="pdw-VC-Xug"/>
                     <connections>
                         <outlet property="accountLabel" destination="dpl-XX-eiI" id="flI-U5-hPA"/>
-                        <outlet property="amountField" destination="fn8-xC-v4W" id="nMU-BO-Sgt"/>
-                        <outlet property="headerback" destination="xwM-ID-6aY" id="7UK-v8-cBv"/>
-                        <outlet property="property" destination="np1-kc-Xvv" id="JvQ-hd-epf"/>
-                        <outlet property="pubkey" destination="dpl-XX-eiI" id="DSo-SN-Bhm"/>
-                        <outlet property="qrImg" destination="HhX-lD-UDx" id="v09-ts-ZSE"/>
+                        <outlet property="amountTextField" destination="fn8-xC-v4W" id="dTY-MB-wfT"/>
+                        <outlet property="headerbackView" destination="xwM-ID-6aY" id="dV8-uC-1cc"/>
+                        <outlet property="propertyLabel" destination="np1-kc-Xvv" id="XG5-xW-gNQ"/>
+                        <outlet property="pubkeyTextField" destination="dpl-XX-eiI" id="krk-O1-5Y9"/>
+                        <outlet property="qrImageView" destination="HhX-lD-UDx" id="hcJ-zJ-wk3"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="sAv-Kb-3pi" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -480,7 +480,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="96F85B43-354E-4613-AB61-07746312C388" width="237" height="237">
+        <image name="1E29DE24-A2C2-4F53-AE72-24964E0441A4" width="237" height="237">
             <mutableData key="keyedArchiveRepresentation">
 YnBsaXN0MDDUAQIDBAUGPT5YJHZlcnNpb25YJG9iamVjdHNZJGFyY2hpdmVyVCR0b3ASAAGGoK4HCBMU
 GR4fIyQrLjE3OlUkbnVsbNUJCgsMDQ4PEBESVk5TU2l6ZVYkY2xhc3NcTlNJbWFnZUZsYWdzVk5TUmVw
