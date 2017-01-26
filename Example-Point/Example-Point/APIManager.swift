@@ -23,8 +23,8 @@ import IrohaSwift
 class APIManager {
     
     
-    static let host = Bundle.main.infoDictionary?["Host"] as! String;
-   
+//    static let host = Bundle.main.infoDictionary?["Host"] as! String;
+    static let host = "https://point-demo.iroha.tech"
     static func GetUserInfo(userId:String, completionHandler: @escaping ([String : Any])->()){
         Alamofire.request("\(host)/account", method: .get,parameters: ["uuid":userId])
             .responseJSON { response in

@@ -84,12 +84,32 @@ class ReceiveViewController: UIViewController, UITextFieldDelegate {
             let alertVC = PMAlertController(title: "通信中", description: "アカウント情報を取得しています", image: UIImage(named: ""), style: .alert)
             self.present(alertVC, animated: true, completion: {
                 APIManager.GetUserInfo(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
+                    
                     if (JSON["status"] as! Int) == 200 {
                         var dicarr: [Dictionary<String, AnyObject>] = (JSON["assets"] as! NSArray) as! [Dictionary<String, AnyObject>]
                         DataManager.instance.property = dicarr[0]["value"] as! Int
                         self.property.text = "\(DataManager.instance.property) \(self.unit)"
 
                         alertVC.dismiss(animated: false, completion: nil)
+                    }else if (JSON["status"] as! Int) == 400 && (JSON["message"] as! String) == "User not found!" {
+                        alertVC.dismiss(animated: false, completion: {
+                            let alertVC = PMAlertController(title: "エラー", description: "ユーザーが見つかりません。初期化して登録しなおしますか？", image: UIImage(named: ""), style: .alert)
+                            
+                            alertVC.addAction(PMAlertAction(title: "再読み込み", style: .cancel, action: { () -> Void in
+                                alertVC.dismiss(animated: false, completion: {
+                                    self.GetUserInfo()
+                                })
+                            }))
+                            
+                            alertVC.addAction(PMAlertAction(title: "初期化", style: .default, action: { () in
+                                alertVC.dismiss(animated: false, completion: {
+                                    let storyboard: UIStoryboard = self.storyboard!
+                                    let nextVC = storyboard.instantiateViewController(withIdentifier: "Register")
+                                    self.present(nextVC, animated: true, completion: nil)
+                                })
+                            }))
+                            self.present(alertVC, animated: true, completion: nil)
+                        })
                     }else{
                         alertVC.dismiss(animated: false, completion: {
                             let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
