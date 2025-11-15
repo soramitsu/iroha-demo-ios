@@ -16,12 +16,12 @@
  */
 
 import Foundation
+import IrohaSwift
 
 class DataManager {
     static let instance: DataManager = DataManager()
     private init() {
     }
-    var privateKey = ""
-    var publicKey = ""
-    var property = 0
+    var balance: Decimal = .zero
+    var transactions: [ToriiTxItem] = []
 }

@@ -28,9 +28,10 @@ func createQRCode(message: String, size: Int = 100, correctionLevel: String = "L
     qrFilter.setDefaults()
     qrFilter.setValue(data, forKey: "inputMessage")
     qrFilter.setValue("H", forKey: "inputCorrectionLevel")
-    let sizeTransform = CGAffineTransform(scaleX: CGFloat(size) , y: CGFloat(size))
-    let ciImage = qrFilter.outputImage!.applying(sizeTransform)
-    
-    return UIImage(ciImage: ciImage, scale: 1, orientation: .up)
+    let sizeTransform = CGAffineTransform(scaleX: CGFloat(size), y: CGFloat(size))
+    guard let output = qrFilter.outputImage?.transformed(by: sizeTransform) else {
+        return UIImage()
+    }
+    return UIImage(ciImage: output, scale: 1, orientation: .up)
     
 }

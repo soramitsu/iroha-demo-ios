@@ -1,30 +1,48 @@
 PODS:
-  - Alamofire (4.2.0)
-  - IrohaSwift (1.0.0)
-  - KeychainAccess (3.0.1)
-  - PMAlertController (2.0.1)
-  - SwiftyJSON (3.1.3)
-  - TextFieldEffects (1.3.0)
-  - Toast-Swift (2.0.0)
+  - Alamofire (5.10.2)
+  - IrohaSwift (0.1.0)
+  - KeychainAccess (4.2.2)
+  - NoritoBridge (0.1.0)
+  - PMAlertController (4.0.1)
+  - SwiftyJSON (5.0.2)
+  - TextFieldEffects (1.6.0)
+  - Toast-Swift (5.1.1)
 
 DEPENDENCIES:
-  - Alamofire
-  - IrohaSwift
-  - KeychainAccess
-  - PMAlertController
-  - SwiftyJSON
-  - TextFieldEffects
-  - Toast-Swift
+  - Alamofire (~> 5.10)
+  - IrohaSwift (from `../../i23/IrohaSwift`)
+  - KeychainAccess (~> 4.2)
+  - NoritoBridge (from `../Vendor/NoritoBridge`)
+  - PMAlertController (~> 4.0)
+  - SwiftyJSON (~> 5.0)
+  - TextFieldEffects (~> 1.6)
+  - Toast-Swift (~> 5.1)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - KeychainAccess
+    - PMAlertController
+    - SwiftyJSON
+    - TextFieldEffects
+    - Toast-Swift
+
+EXTERNAL SOURCES:
+  IrohaSwift:
+    :path: "../../i23/IrohaSwift"
+  NoritoBridge:
+    :path: "../Vendor/NoritoBridge"
 
 SPEC CHECKSUMS:
-  Alamofire: aa2e09d871c9160ac53c90e83c68064a94e3dfbe
-  IrohaSwift: 69771b19d5289dc297dc01ac266877972b236710
-  KeychainAccess: 017ea25e313a49eda10bb19b0bb0760fb1edfe1a
-  PMAlertController: 8f809a67e740bd6ce1bb7d6017c12c94e997f64b
-  SwiftyJSON: 38a8ea2006779c0fc4c310cb2ee8195327740faf
-  TextFieldEffects: ef594746f17997c813e07633f8ae5acaf9b04f27
-  Toast-Swift: 5b2f8f720f7e78e48511f693df1f9c9a6e38a25a
+  Alamofire: 7193b3b92c74a07f85569e1a6c4f4237291e7496
+  IrohaSwift: 9bb22618288ad09b9a54389ac2b18c171c7bc6bc
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
+  NoritoBridge: bb002c6df3cca1c271e6831bf57fde8ecaa04172
+  PMAlertController: ab5fcf4d085b7878c9451466d701449c4bf6efb8
+  SwiftyJSON: f5b1bf1cd8dd53cd25887ac0eabcfd92301c6a5a
+  TextFieldEffects: 529b8aff706fb40f82c41c780c0777941a893796
+  Toast-Swift: 7a03a532afe3a560d4044bc7c237e2864d295173
 
-PODFILE CHECKSUM: 59ecba3eae12a865e0c4ab99b2bc5dc0ea79af09
+PODFILE CHECKSUM: ca1b28e6c5351f892c5dea193277ae008c25d775
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.16.2

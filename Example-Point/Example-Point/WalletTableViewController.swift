@@ -1,228 +1,236 @@
-/*
- Copyright Soramitsu Co., Ltd. 2016 All Rights Reserved.
- http://soramitsu.co.jp
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
- http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-
 import UIKit
 import PMAlertController
 import IrohaSwift
 
-class WalletTableViewController: UITableViewController {
-    let historyRefresh = UIRefreshControl()
-    
-    var myItems : [Dictionary<String, AnyObject>]?
-    
-    let unit = Bundle.main.infoDictionary?["Unit"] as! String;
-
-    var labeltxt = "";
-    var label:UILabel?
-    let color = Bundle.main.infoDictionary?["AppColor"] as! String;
-
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.navigationController?.navigationBar.barTintColor = UIColor.hex(hex: color, alpha: 1)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        self.navigationController?.topViewController!.navigationItem.title = "Wallet"
-        self.tabBarController?.tabBar.tintColor = UIColor.hex(hex: color, alpha: 1)
-
+final class WalletTableViewController: UITableViewController {
+    private enum Section {
+        case main
     }
-    
+
+    private struct TransactionItem: Hashable {
+        let transaction: ToriiTxItem
+        private let identifier: String
+
+        init(transaction: ToriiTxItem) {
+            self.transaction = transaction
+            let authority = transaction.authority ?? "unknown"
+            let timestamp = transaction.timestamp_ms.map(String.init) ?? "0"
+            identifier = "\(transaction.entrypoint_hash)|\(timestamp)|\(authority)|\(transaction.result_ok)"
+        }
+
+        func hash(into hasher: inout Hasher) {
+            hasher.combine(identifier)
+        }
+
+        static func == (lhs: TransactionItem, rhs: TransactionItem) -> Bool {
+            lhs.identifier == rhs.identifier
+        }
+    }
+
+    private let historyRefresh = UIRefreshControl()
+    private var dataSource: UITableViewDiffableDataSource<Section, TransactionItem>!
+    private let config = ToriiService.shared.config
+    private var balanceLabel: UILabel?
+    private let colorHex = Bundle.main.infoDictionary?["AppColor"] as? String ?? "E4232D"
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        labeltxt = "0 \(unit)"
-        historyRefresh.addTarget(self, action: #selector(refresh), for: UIControlEvents.valueChanged)
-        tableView.addSubview(historyRefresh)
-        loadTransaction()
-        self.view.backgroundColor = UIColor.white
-        
-        tableView.sectionHeaderHeight = 120
+        tableView.backgroundColor = .clear
+        tableView.backgroundView = GradientBackgroundView(frame: view.bounds)
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 160
+        tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 32, right: 0)
+        tableView.separatorStyle = .none
         tableView.register(TransactionCell.self, forCellReuseIdentifier: "TransactionCell")
-        tableView.separatorStyle = UITableViewCellSeparatorStyle.none
+        configureDataSource()
+
+        historyRefresh.addTarget(self, action: #selector(refreshTriggered), for: .valueChanged)
+        historyRefresh.tintColor = UIColor.iroha
+        tableView.refreshControl = historyRefresh
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleWalletRefreshNotification),
+                                               name: .toriiWalletShouldRefresh,
+                                               object: nil)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "paintbrush"),
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(showThemeSettings))
+        applySoraFonts()
+        loadSnapshot()
     }
-    
-    func loadTransaction(){
-        //        self.tabBarController?.tabBar.isHidden = true
-        
-        if(CheckReachability(host_name: "google.com")){
-            let alertVC = PMAlertController(title: "通信中", description: "取引履歴を取得しています", image: UIImage(named: ""), style: .alert)
-            self.present(alertVC, animated: true, completion: {
-                APIManager.GetUserInfo(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
-                    if (JSON["status"] as! Int) == 200 {
-                        var dicarr: [Dictionary<String, AnyObject>] = (JSON["assets"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                        DataManager.instance.property = dicarr[0]["value"] as! Int
-                        self.label?.text = "\(DataManager.instance.property) \(self.unit)"
-                        
-                        
-                        APIManager.GetTransaction(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
-                            if (JSON["status"] as! Int) == 200 {
-                                var dicarr: [Dictionary<String, AnyObject>] = (JSON["history"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                                self.myItems = dicarr
-                                self.tableView.reloadData()
-                                alertVC.dismiss(animated: false, completion:nil)
-                            }else{
-                                alertVC.dismiss(animated: false, completion: {
-                                    let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
-                                    
-                                    alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                                    }))
-                                    self.present(alertVC, animated: true, completion: nil)
-                                })
-                            }
-                        })
-                    }else{
-                        alertVC.dismiss(animated: false, completion: {
-                            let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        })
-                    }
-                })
-            })
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.navigationBar.tintColor = UIColor.label
+        navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.label]
+        navigationController?.topViewController?.navigationItem.title = "Wallet"
+        tabBarController?.tabBar.tintColor = UIColor.hex(hex: colorHex, alpha: 1)
+        tabBarController?.tabBar.isHidden = false
+    }
+
+    @objc private func refreshTriggered() {
+        loadSnapshot(showLoader: false)
+    }
+
+    @objc private func handleWalletRefreshNotification() {
+        loadSnapshot(showLoader: false)
+    }
+
+    private func loadSnapshot(showLoader: Bool = true) {
+        guard let accountId = KeychainManager.instance.accountId else {
+            presentRegistrationReset()
+            return
         }
 
-    }
-    
-    func refresh() {
-        if CheckReachability(host_name: "google.com") {
-            let alertVC = PMAlertController(title: "通信中", description: "取引履歴を取得しています", image: UIImage(named: ""), style: .alert)
-            self.present(alertVC, animated: true, completion: {
-                APIManager.GetUserInfo(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
-                    if (JSON["status"] as! Int) == 200 {
-                        var dicarr: [Dictionary<String, AnyObject>] = (JSON["assets"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                        DataManager.instance.property = dicarr[0]["value"] as! Int
-                        self.label?.text = "\(DataManager.instance.property) \(self.unit)"
-                        
-                APIManager.GetTransaction(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
-                    if (JSON["status"] as! Int) == 200 {
-                        var dicarr: [Dictionary<String, AnyObject>] = (JSON["history"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                        self.myItems = dicarr
-                        alertVC.dismiss(animated: false, completion:nil)
-                        self.tableView.reloadData()
-                        self.historyRefresh.endRefreshing()
-                    }else{
-                        alertVC.dismiss(animated: false, completion: {
-                            let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        })
-                    }
-                })
-                    }else{
-                        alertVC.dismiss(animated: false, completion: {
-                            let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        })
-                    }
-                })
-
-            })
-        }else{
-            self.tabBarController?.tabBar.isHidden = true
-            
-            let alertVC = PMAlertController(title: "接続エラー", description: "ネットワークを確認してね", image: UIImage(named: ""), style: .alert)
-            
-            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                alertVC.dismiss(animated: false, completion: nil)
-                self.tableView.reloadData()
-                self.historyRefresh.endRefreshing()
-                self.tabBarController?.tabBar.isHidden = false
-                
-            }))
-            
-            self.present(alertVC, animated: true, completion: nil)
+        var alert: PMAlertController?
+        if showLoader {
+            alert = PMAlertController(title: "通信中", description: "ウォレットを更新しています", image: nil, style: .alert)
+            if let alert { present(alert, animated: true) }
         }
-    }
-    
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let myView: UIView = UIView()
-        myView.backgroundColor = UIColor.hex(hex: color, alpha: 1)
-        label = UILabel(frame: CGRect(x:0, y:0, width:UIScreen.main.bounds.size.width, height:120))
-        label!.backgroundColor = UIColor.clear
-        label!.text = "\(DataManager.instance.property) \(unit)"
 
-        label!.textColor = UIColor.white
-        label!.font = UIFont.systemFont(ofSize: 29)
-        label!.textAlignment = .center
-        myView.addSubview(label!)
-        
-        return myView
-    }
-    
-    
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
-    
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if myItems?.count == nil {
-            return 0
-        }
-        return myItems!.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath:IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as! TransactionCell
-        let item = myItems?[(self.myItems?.count)! - indexPath.row - 1]
-        let param = item?["params"] as! Dictionary<String, AnyObject>
-//        print(item)
-//        print(param["sender"] as! String)
-//        print(param["receiver"] as! String)
-//        print(KeychainManager.instance.keychain["publicKey"]!)
-        if param["command"] as! String == "Transfer"{
-            if((param["sender"] as! String) == KeychainManager.instance.keychain["publicKey"]!){
-                cell.fillWith(isSender: true, oppo: param["receiver"] as! String, valueText: "\(param["value"]!)",time: param["timestamp"]! as! Int)
-                
-            }else{
-                cell.fillWith(isSender: false, oppo: param["sender"] as! String, valueText: "\(param["value"]!)",time: param["timestamp"]! as! Int)
-                
+        Task {
+            do {
+                let snapshot = try await ToriiService.shared.fetchSnapshot(accountId: accountId)
+                let balance = ToriiService.shared.parseBalance(from: snapshot.balances)
+                DataManager.instance.balance = balance
+                DataManager.instance.transactions = snapshot.transactions
+                let formattedBalance = formatted(amount: balance)
+                let items = snapshot.transactions.map(TransactionItem.init)
+                await MainActor.run {
+                    self.balanceLabel?.text = formattedBalance
+                    self.applySnapshot(items)
+                    alert?.dismiss(animated: true)
+                    self.historyRefresh.endRefreshing()
+                }
+            } catch {
+                await MainActor.run {
+                    alert?.dismiss(animated: true)
+                    self.historyRefresh.endRefreshing()
+                    self.presentError(message: error.localizedDescription)
+                }
             }
         }
-        if param["command"] as! String == "Add" && param["object"] as! String == "Account" {
-            cell.fillWithRegister(time: param["timestamp"]! as! Int)
+    }
+
+    private func formatted(amount: Decimal) -> String {
+        "\(amount.plainString) \(config.unit)"
+    }
+
+    private func presentError(message: String) {
+        let alert = PMAlertController(title: "エラー", description: message, image: nil, style: .alert)
+        alert.addAction(PMAlertAction(title: "OK", style: .cancel, action: nil))
+        present(alert, animated: true)
+    }
+
+    private func presentRegistrationReset() {
+        let alert = PMAlertController(title: "アカウントなし", description: "登録画面に戻ります", image: nil, style: .alert)
+        alert.addAction(PMAlertAction(title: "OK", style: .default) { [weak self] in
+            self?.navigateToRegister()
+        })
+        present(alert, animated: true)
+    }
+
+    @objc private func showThemeSettings() {
+        let controller = ThemeSettingsViewController()
+        controller.modalPresentationStyle = .pageSheet
+        if let sheet = controller.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(controller, animated: true)
+    }
+
+    private func navigateToRegister() {
+        let storyboard = storyboard ?? UIStoryboard(name: "Main", bundle: nil)
+        if let register = storyboard.instantiateViewController(withIdentifier: "Register") as UIViewController? {
+            present(register, animated: true)
+        }
+    }
+
+    // MARK: - Table view data source
+
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let container = UIView()
+        container.backgroundColor = .clear
+        container.applyGlassCardStyle(cornerRadius: 28)
+
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.alignment = .leading
+        stack.spacing = 8
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        stack.isLayoutMarginsRelativeArrangement = true
+        stack.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
+        container.addSubview(stack)
+
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stack.topAnchor.constraint(equalTo: container.topAnchor),
+            stack.bottomAnchor.constraint(equalTo: container.bottomAnchor)
+        ])
+
+        let title = UILabel()
+        title.text = "残高"
+        title.font = UIFont.sora(.semiBold, size: 14)
+        title.textColor = UIColor.glassSecondaryText
+        title.adjustsFontForContentSizeCategory = true
+        stack.addArrangedSubview(title)
+
+        let balanceLabel = UILabel()
+        balanceLabel.font = UIFont.sora(.bold, size: 36)
+        balanceLabel.adjustsFontForContentSizeCategory = true
+        balanceLabel.textColor = UIColor.glassPrimaryText
+        balanceLabel.text = formatted(amount: DataManager.instance.balance)
+        stack.addArrangedSubview(balanceLabel)
+        self.balanceLabel = balanceLabel
+
+        if let accountId = KeychainManager.instance.accountId {
+            let accountLabel = UILabel()
+            accountLabel.font = UIFont.sora(.medium, size: 13)
+            accountLabel.adjustsFontForContentSizeCategory = true
+            accountLabel.textColor = UIColor.glassSecondaryText
+            accountLabel.numberOfLines = 0
+            accountLabel.text = accountId
+            stack.addArrangedSubview(accountLabel)
         }
 
-        return cell
+        container.applySoraFontsRecursively()
+        return container
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+
+    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        UITableView.automaticDimension
     }
-    
-    @IBAction func Initialization(_ sender: AnyObject) {
-        let alertVC = PMAlertController(title: "デバッグ用", description: "アプリを初期化します。", image: UIImage(named: ""), style: .alert)
-        
-        alertVC.addAction(PMAlertAction(title: "Cancel", style: .cancel, action: { () -> Void in
-            alertVC.dismiss(animated: false, completion: nil)
-        }))
-        
-        alertVC.addAction(PMAlertAction(title: "OK", style: .default, action: { () in
-            alertVC.dismiss(animated: false, completion: nil)
-            KeychainManager.instance.keychain["privateKey"] = nil
-            exit(0)
-        }))
-        
-        self.present(alertVC, animated: true, completion: nil)
+
+    override func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        160
     }
-    
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    // MARK: - Diffable data source
+
+    private func configureDataSource() {
+        dataSource = UITableViewDiffableDataSource<Section, TransactionItem>(tableView: tableView) { [weak self] tableView, indexPath, item in
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: "TransactionCell", for: indexPath) as? TransactionCell else {
+                return UITableViewCell()
+            }
+            let accountId = KeychainManager.instance.accountId
+            cell.configure(with: item.transaction, currentAccountId: accountId, unit: self?.config.unit ?? "")
+            return cell
+        }
+        tableView.dataSource = dataSource
+        applySnapshot([])
+    }
+
+    private func applySnapshot(_ items: [TransactionItem]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, TransactionItem>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(items, toSection: .main)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 }

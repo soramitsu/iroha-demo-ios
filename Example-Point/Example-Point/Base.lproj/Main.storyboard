@@ -416,8 +416,8 @@
                         <outlet property="accountLabel" destination="dpl-XX-eiI" id="flI-U5-hPA"/>
                         <outlet property="amountField" destination="fn8-xC-v4W" id="nMU-BO-Sgt"/>
                         <outlet property="headerback" destination="xwM-ID-6aY" id="7UK-v8-cBv"/>
-                        <outlet property="property" destination="np1-kc-Xvv" id="JvQ-hd-epf"/>
-                        <outlet property="pubkey" destination="dpl-XX-eiI" id="DSo-SN-Bhm"/>
+                        <outlet property="propertyLabel" destination="np1-kc-Xvv" id="JvQ-hd-epf"/>
+                        <outlet property="pubkeyLabel" destination="dpl-XX-eiI" id="DSo-SN-Bhm"/>
                         <outlet property="qrImg" destination="HhX-lD-UDx" id="v09-ts-ZSE"/>
                     </connections>
                 </viewController>

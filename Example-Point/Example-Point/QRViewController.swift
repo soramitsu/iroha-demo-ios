@@ -16,146 +16,123 @@
  */
 
 
-import Foundation
 import UIKit
 import AVFoundation
 import PMAlertController
 
-class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate{
-    
-    
-    @IBOutlet weak var cameraRegion: UIImageView!
-    var captureSession: AVCaptureSession!
-    var previewLayer: AVCaptureVideoPreviewLayer?
-    var captureDevice: AVCaptureDevice?
-    var input:AVCaptureDeviceInput!
-    var output: AVCaptureMetadataOutput!
-    var dataValueDict: Dictionary<String, String> = [:]
-    
+final class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+    @IBOutlet private weak var cameraRegion: UIImageView!
+
+    private let captureSession = AVCaptureSession()
+    private let metadataOutput = AVCaptureMetadataOutput()
+    private var previewLayer: AVCaptureVideoPreviewLayer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        self.navigationController?.navigationBar.tintColor = UIColor.white
-        
+        navigationController?.navigationBar.tintColor = UIColor.label
+        configureSession()
+        applySoraFonts()
     }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        cameraRegion.frame = CGRect(x: 0, y: 0, width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height)
-        self.tabBarController?.tabBar.isHidden = true
-        
-        cameraSetting()
+        tabBarController?.tabBar.isHidden = true
+        if !captureSession.isRunning {
+            captureSession.startRunning()
+        }
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        self.captureSession.stopRunning()
-        for output in self.captureSession.outputs {
-            self.captureSession.removeOutput(output as? AVCaptureOutput)
-        }
-        
-        for input in self.captureSession.inputs {
-            self.captureSession.removeInput(input as? AVCaptureInput)
-        }
-        self.captureSession = nil
-        self.captureDevice = nil
-    }
-    
-    
-    func cameraSetting(){
-        
-        self.captureSession = AVCaptureSession()
-        
-        self.captureDevice = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
-        do {
-            self.input = try AVCaptureDeviceInput(device: self.captureDevice) as AVCaptureDeviceInput
-        } catch let error as NSError {
-            print(error)
-        }
-        
-        if(self.captureSession.canAddInput(self.input)) {
-            self.captureSession.addInput(self.input)
-        }
-        
-        self.previewLayer = AVCaptureVideoPreviewLayer(session: self.captureSession)
-        self.previewLayer!.frame = self.cameraRegion.frame
-        self.previewLayer!.videoGravity = AVLayerVideoGravityResizeAspectFill
-        
-        self.view.layer.addSublayer(self.previewLayer!)
-        
-        self.output = AVCaptureMetadataOutput();
-        self.output.setMetadataObjectsDelegate(self, queue: DispatchQueue.main);
-        self.captureSession.addOutput(self.output);
-        
-        self.output.metadataObjectTypes = [AVMetadataObjectTypeQRCode];
-        
-        self.captureSession.startRunning()
-        self.view.sendSubview(toBack: self.cameraRegion)
-        
-    }
-    func captureOutput(_ captureOutput: AVCaptureOutput!, didOutputMetadataObjects metadataObjects: [Any]!, from connection: AVCaptureConnection!) {
-        self.captureSession.stopRunning()
-        for data in metadataObjects {
-            print(data)
-            if (data as AnyObject).type == AVMetadataObjectTypeQRCode {
-                let dataValue: String = (data as! AVMetadataMachineReadableCodeObject).stringValue
-                let cnvData = convertStringToDictionary(text: dataValue)
-                print(cnvData)
-                if let dataDict = cnvData {
-                    print(dataDict)
-                    if(dataDict["account"] != nil){
-                        if(dataDict["account"] as! String == KeychainManager.instance.keychain["publicKey"]){
-                            let alertVC = PMAlertController(title: "エラー", description: "自分に送信することはできません", image: UIImage(named: "tibihash3.png"), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                                self.captureSession.startRunning()
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        }
 
-                        self.captureSession.stopRunning()
-                        let prevvc = navigationController?.viewControllers[(navigationController?.viewControllers.count)! - 2] as! SendViewController
-                        if(dataDict["amount"]! as! Int == 0){
-                            prevvc.amount = ""
-                        }else{
-                            prevvc.amount = "\(dataDict["amount"]!)"
-                        }
-                        prevvc.to = dataDict["account"] as! String
-                        navigationController?.popViewController(animated: true)
-                    }else{
-                        let alertVC = PMAlertController(title: "エラー", description: "不正なQRコードです", image: UIImage(named: "tibihash3.png"), style: .alert)
-                        
-                        alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                            self.captureSession.startRunning()
-                        }))
-                        self.present(alertVC, animated: true, completion: nil)
-                    }
-                }else{
-                    let alertVC = PMAlertController(title: "エラー", description: "不正なQRコードです", image: UIImage(named: "tibihash3.png"), style: .alert)
-                    
-                    alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                        self.captureSession.startRunning()
-                    }))
-                    self.present(alertVC, animated: true, completion: nil)
-                }
-                
-            }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if captureSession.isRunning {
+            captureSession.stopRunning()
         }
-        
     }
-    
-    func convertStringToDictionary(text: String) -> [String:AnyObject]? {
-        if let data = text.data(using: String.Encoding.utf8) {
-            do {
-                return try JSONSerialization.jsonObject(with: data, options: []) as? [String:AnyObject]
-            } catch let error as NSError {
-                print(error)
-            }
+
+    private func configureSession() {
+        guard previewLayer == nil else { return }
+        captureSession.beginConfiguration()
+
+        guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back),
+              let deviceInput = try? AVCaptureDeviceInput(device: device),
+              captureSession.canAddInput(deviceInput) else {
+            captureSession.commitConfiguration()
+            return
         }
-        return nil
+        captureSession.addInput(deviceInput)
+
+        guard captureSession.canAddOutput(metadataOutput) else {
+            captureSession.commitConfiguration()
+            return
+        }
+        captureSession.addOutput(metadataOutput)
+        metadataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+        metadataOutput.metadataObjectTypes = [.qr]
+
+        captureSession.commitConfiguration()
+
+        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.frame = view.layer.bounds
+        view.layer.insertSublayer(previewLayer, below: cameraRegion.layer)
+        self.previewLayer = previewLayer
+
+        captureSession.startRunning()
     }
-    
+
+    func metadataOutput(_ output: AVCaptureMetadataOutput,
+                        didOutput metadataObjects: [AVMetadataObject],
+                        from connection: AVCaptureConnection) {
+        guard let readableObject = metadataObjects.compactMap({ $0 as? AVMetadataMachineReadableCodeObject }).first,
+              readableObject.type == .qr,
+              let stringValue = readableObject.stringValue else {
+            return
+        }
+        captureSession.stopRunning()
+        handlePayload(stringValue)
+    }
+
+    private func handlePayload(_ value: String) {
+        guard let payload = convertStringToDictionary(text: value),
+              let account = payload["account"] as? String else {
+            presentError(message: "不正なQRコードです")
+            return
+        }
+
+        if account.caseInsensitiveCompare(KeychainManager.instance.accountId ?? "") == .orderedSame {
+            presentError(message: "自分に送信することはできません")
+            return
+        }
+
+        let amountValue: String?
+        if let amount = payload["amount"] as? Int, amount > 0 {
+            amountValue = String(amount)
+        } else {
+            amountValue = nil
+        }
+
+        if let sendVC = navigationController?.viewControllers.dropLast().last as? SendViewController {
+            sendVC.prefill(receiver: account, amount: amountValue)
+        }
+        navigationController?.popViewController(animated: true)
+    }
+
+    private func presentError(message: String) {
+        let alert = PMAlertController(title: "エラー",
+                                      description: message,
+                                      image: UIImage(named: "tibihash3.png"),
+                                      style: .alert)
+        alert.addAction(PMAlertAction(title: "OK", style: .cancel, action: { [weak self] in
+            guard let self else { return }
+            if !self.captureSession.isRunning {
+                self.captureSession.startRunning()
+            }
+        }))
+        present(alert, animated: true, completion: nil)
+    }
+
+    private func convertStringToDictionary(text: String) -> [String: Any]? {
+        guard let data = text.data(using: .utf8) else { return nil }
+        return try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
+    }
 }

@@ -1,138 +1,115 @@
-/*
- Copyright Soramitsu Co., Ltd. 2016 All Rights Reserved.
- http://soramitsu.co.jp
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
- http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
 import UIKit
+import IrohaSwift
 
-class TransactionCell: UITableViewCell {
-    
-    let color = UIColor.black
-    var pay = false
-    var value = 0;
-    var trans: UIView?
-    var transLabel:UILabel?
-    var label:UILabel?
-    var dateLabel:UILabel?
-    var oppLabel:UILabel?
-    var typeImg:UIImageView?
-    let ovalShapeLayer = CAShapeLayer()
-    override init(style: UITableViewCellStyle, reuseIdentifier: String!) {
+final class TransactionCell: UITableViewCell {
+    private let container = UIView()
+    private let iconView = UIImageView()
+    private let amountLabel = UILabel()
+    private let counterpartyLabel = UILabel()
+    private let statusLabel = UILabel()
+    private let dateLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        trans = UIView()
-        trans!.frame = CGRect(x:0, y: 0, width: UIScreen.main.bounds.size.width, height: 60)
-        self.addSubview(trans!)
-        
-//        // 円のCALayer作成
-//        ovalShapeLayer.strokeColor = UIColor.white.cgColor
-//        ovalShapeLayer.fillColor = UIColor.white.cgColor
-//        ovalShapeLayer.lineWidth = 0.0
-//        
-//        // 図形は円形
-//        ovalShapeLayer.path = UIBezierPath(ovalIn: CGRect(x: 10, y: 22, width: 15.0, height: 15.0)).cgPath
-//        self.layer.addSublayer(ovalShapeLayer)
-//
-        typeImg = UIImageView(frame: CGRect(x:10, y:10, width:trans!.frame.height-20, height:trans!.frame.height-20))
-        typeImg?.image = UIImage(named: "icon_send")
-        trans!.addSubview(typeImg!)
+        selectionStyle = .none
+        backgroundColor = .clear
 
-        let lineLeft:CGFloat = trans!.frame.origin.x + trans!.frame.width
-        //        let lineMargin:CGFloat = 12
-        label = UILabel()
-        label = UILabel(frame: CGRect(x:0, y:0, width:trans!.frame.width-10, height:trans!.frame.height))
-        label!.backgroundColor = UIColor.clear
-        label!.textColor = UIColor.black
-        label!.font = UIFont.boldSystemFont(ofSize: 22)
-        label!.textAlignment = .right
-        trans!.addSubview(label!)
-        
-        dateLabel = UILabel()
-        dateLabel = UILabel(frame: CGRect(x:0, y:-20, width:trans!.frame.width-4, height:trans!.frame.height))
-        dateLabel!.backgroundColor = UIColor.clear
-        dateLabel!.textColor = UIColor.gray
-        dateLabel!.font = UIFont.boldSystemFont(ofSize: 14)
-        dateLabel!.textAlignment = .right
-        dateLabel?.text = "100"
-        trans!.addSubview(dateLabel!)
-        
-        oppLabel = UILabel()
-        oppLabel = UILabel(frame: CGRect(x:trans!.frame.height, y:0, width:trans!.frame.width-100, height:trans!.frame.height))
-        oppLabel!.backgroundColor = UIColor.clear
-        oppLabel!.textColor = UIColor.gray
-        oppLabel!.font = UIFont.boldSystemFont(ofSize: 15)
-        oppLabel!.textAlignment = .left
-        oppLabel!.text = "from hoge"
-        trans!.addSubview(oppLabel!)
-        
-        let sepalator = UIView()
-        sepalator.frame = CGRect(x: 0, y: 60 - 1, width: UIScreen.main.bounds.size.width, height: 1)
-        sepalator.backgroundColor = UIColor.gray.withAlphaComponent(0.2)
-        self.addSubview(sepalator)
+        container.translatesAutoresizingMaskIntoConstraints = false
+        container.backgroundColor = .clear
+        container.applyGlassCardStyle(cornerRadius: 22)
+        contentView.addSubview(container)
+        NSLayoutConstraint.activate([
+            container.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            container.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            container.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            container.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8)
+        ])
+
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        iconView.contentMode = .scaleAspectFit
+        iconView.tintColor = UIColor.glassPrimaryText
+        container.addSubview(iconView)
+
+        amountLabel.translatesAutoresizingMaskIntoConstraints = false
+        amountLabel.font = UIFont.boldSystemFont(ofSize: 18)
+        amountLabel.textColor = UIColor.glassPrimaryText
+        container.addSubview(amountLabel)
+
+        counterpartyLabel.translatesAutoresizingMaskIntoConstraints = false
+        counterpartyLabel.font = UIFont.systemFont(ofSize: 14)
+        counterpartyLabel.textColor = UIColor.glassSecondaryText
+        container.addSubview(counterpartyLabel)
+
+        statusLabel.translatesAutoresizingMaskIntoConstraints = false
+        statusLabel.font = UIFont.systemFont(ofSize: 12)
+        statusLabel.textColor = UIColor.glassSecondaryText
+        container.addSubview(statusLabel)
+
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.font = UIFont.systemFont(ofSize: 12)
+        dateLabel.textColor = UIColor.glassSecondaryText
+        container.addSubview(dateLabel)
+
+        NSLayoutConstraint.activate([
+            iconView.widthAnchor.constraint(equalToConstant: 32),
+            iconView.heightAnchor.constraint(equalToConstant: 32),
+            iconView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            iconView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+
+            amountLabel.leadingAnchor.constraint(equalTo: iconView.trailingAnchor, constant: 12),
+            amountLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            amountLabel.topAnchor.constraint(equalTo: container.topAnchor, constant: 4),
+
+            counterpartyLabel.leadingAnchor.constraint(equalTo: amountLabel.leadingAnchor),
+            counterpartyLabel.trailingAnchor.constraint(equalTo: amountLabel.trailingAnchor),
+            counterpartyLabel.topAnchor.constraint(equalTo: amountLabel.bottomAnchor, constant: 2),
+
+            statusLabel.leadingAnchor.constraint(equalTo: amountLabel.leadingAnchor),
+            statusLabel.topAnchor.constraint(equalTo: counterpartyLabel.bottomAnchor, constant: 2),
+
+            dateLabel.trailingAnchor.constraint(equalTo: amountLabel.trailingAnchor),
+            dateLabel.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor)
+        ])
+
+        contentView.applySoraFontsRecursively()
     }
-    
-    func fillWith(isSender:Bool, oppo:String, valueText: String, time: Int) {
-        if(isSender){
-            self.typeImg?.image = UIImage(named: "icon_send-2")
-            oppLabel!.text = "to \(oppo)"
-        }else{
-            self.typeImg?.image = UIImage(named: "icon_receive-2")
-            oppLabel!.text = "from \(oppo)"
-        }
-        dateLabel?.text = calcTimeDiff(time: time)
-        self.label?.text = valueText
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
-    
-    func fillWithRegister(time: Int) {
-        dateLabel?.text = calcTimeDiff(time: time)
-        oppLabel!.text = "Register"
-        self.typeImg?.image = UIImage(named: "icon_receive-2")
-        self.label?.text = "100"
-    }
-    
-    func calcTimeDiff(time:Int) -> String{
-        let sec = Int(Date().timeIntervalSince1970) - time
-        if (sec <= 0) {
-            return "now";
-        } else if (sec < 60) {
-            return "\(sec) sec";
-        } else if (sec < 3600) {
-            return "\(Int(round(Double(sec/60)))) min";
-        } else if (sec < 3600 * 24) {
-            return "\(Int(round(Double(sec / (60 * 60))))) hour";
-        } else if (sec < 3600 * 24 * 31) {
-            return "\(Int(round(Double(sec / (60 * 60 * 24))))) day";
+
+    func configure(with item: ToriiTxItem, currentAccountId: String?, unit: String) {
+        let isSender = item.authority?.caseInsensitiveCompare(currentAccountId ?? "") == .orderedSame
+        iconView.image = UIImage(named: isSender ? "icon_send-2" : "icon_receive-2")?.withRenderingMode(.alwaysTemplate)
+        iconView.tintColor = isSender ? UIColor.iroha : UIColor.irohaGreen
+        counterpartyLabel.text = item.authority ?? "Unknown"
+        let hashPrefix = String(item.entrypoint_hash.prefix(10)).uppercased()
+        amountLabel.text = "#\(hashPrefix)"
+        statusLabel.text = item.result_ok ? "Succeeded" : "Failed"
+
+        if let timestamp = item.timestamp_ms {
+            let date = Date(timeIntervalSince1970: Double(timestamp) / 1000.0)
+            if let relative = Self.relativeFormatter.string(from: date, to: Date()) {
+                dateLabel.text = relative
+            } else {
+                dateLabel.text = Self.absoluteFormatter.string(from: date)
+            }
         } else {
-            let date = Date(timeIntervalSince1970: TimeInterval(time));
-            let formatter = DateFormatter()
-            formatter.locale = NSLocale(localeIdentifier: "ja_JP") as Locale!
-            formatter.dateFormat = "yyyy/MM/dd"
-            formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0) as TimeZone!
-            return formatter.string(from: date)
+            dateLabel.text = ""
         }
     }
-    
-    
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-    }
-    
-    func addLine(frame:CGRect) {
-        let line = UIView(frame:frame)
-        line.layer.cornerRadius = frame.height / 2
-        line.backgroundColor = color
-        self.addSubview(line)
-    }
+
+    private static let relativeFormatter: DateComponentsFormatter = {
+        let formatter = DateComponentsFormatter()
+        formatter.unitsStyle = .abbreviated
+        formatter.allowedUnits = [.minute, .hour, .day]
+        return formatter
+    }()
+
+    private static let absoluteFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
 }

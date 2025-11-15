@@ -1,189 +1,172 @@
-/*
- Copyright Soramitsu Co., Ltd. 2016 All Rights Reserved.
- http://soramitsu.co.jp
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
- http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-
 import UIKit
 import TextFieldEffects
-import IrohaSwift
 import PMAlertController
 import Toast_Swift
 
-class ReceiveViewController: UIViewController, UITextFieldDelegate {
-    
-    @IBOutlet weak var accountLabel: UITextField!
-    @IBOutlet weak var property: UILabel!
-    @IBOutlet weak var qrImg: UIImageView!
-    @IBOutlet weak var pubkey: UITextField!
-    @IBOutlet weak var amountField: HoshiTextField!
-    @IBOutlet weak var headerback: UIView!
-    
-    var qr:UIImage?
-    let qrstr = "{\"account\":\"\(KeychainManager.instance.keychain["publicKey"]!)\","
-    let unit = Bundle.main.infoDictionary?["Unit"] as! String;
-    let color = Bundle.main.infoDictionary?["AppColor"] as! String;
+final class ReceiveViewController: UIViewController, UITextFieldDelegate {
+    @IBOutlet private weak var accountLabel: UITextField!
+    @IBOutlet private weak var propertyLabel: UILabel!
+    @IBOutlet private weak var qrImg: UIImageView!
+    @IBOutlet private weak var pubkeyLabel: UITextField!
+    @IBOutlet private weak var amountField: HoshiTextField!
+    @IBOutlet private weak var headerback: UIView!
 
+    private var qrImage: UIImage?
+    private let service = ToriiService.shared
+    private let unit = ToriiService.shared.config.unit
+    private let colorHex = Bundle.main.infoDictionary?["AppColor"] as? String ?? "E4232D"
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-//        self.navigationController?.navigationBar.barTintColor = UIColor.iroha
-        self.navigationController?.navigationBar.barTintColor = UIColor.hex(hex: color, alpha: 1)
-        self.navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName: UIColor.white]
-        self.navigationController?.topViewController!.navigationItem.title = "Receive"
-        self.tabBarController?.tabBar.tintColor = UIColor.irohaGreen
-        property.text = "\(DataManager.instance.property) \(unit)"
-
-
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
-        headerback.backgroundColor = UIColor.hex(hex: color, alpha: 1)
+        installGlassBackground()
+        headerback.applyGlassCardStyle(cornerRadius: 24)
+        qrImg.applyGlassCardStyle(cornerRadius: 24, includeBlur: false)
+        qrImg.clipsToBounds = true
         amountField.delegate = self
-        NotificationCenter.default.addObserver(self, selector: #selector(changeTextField), name: NSNotification.Name.UITextFieldTextDidChange, object: nil)
-
-        let pub = KeychainManager.instance.keychain["publicKey"]!
-        pubkey.text = pub
-        let qrmsg = "\(qrstr)\"amount\":0}"
-        qr = createQRCode(message: qrmsg)
-        qrImg.image = qr
-        
-        let keyboardHeader = UIToolbar(frame: CGRect(x: 0, y: 0, width: 320, height: 40))
-        keyboardHeader.barStyle = UIBarStyle.default
-        keyboardHeader.sizeToFit()
-        let spacer = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.flexibleSpace, target: self, action: nil)
-        let commitButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.done, target: self, action: Selector("commitButtonTapped"))
-        keyboardHeader.items = [spacer, commitButton]
-        amountField.inputAccessoryView = keyboardHeader
-        GetUserInfo()
-        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(changeTextField(_:)),
+                                               name: UITextField.textDidChangeNotification,
+                                               object: amountField)
+        configureKeyboardAccessory()
         accountLabel.isUserInteractionEnabled = true
         accountLabel.delegate = self
-
+        applyGlassStyling()
+        navigationController?.topViewController?.navigationItem.title = "Receive"
+        updateQR(amount: 0)
+        applySoraFonts()
     }
-    
-    
-    func GetUserInfo(){
-        //        self.tabBarController?.tabBar.isHidden = true
-        
-        if(CheckReachability(host_name: "google.com")){
-            let alertVC = PMAlertController(title: "通信中", description: "アカウント情報を取得しています", image: UIImage(named: ""), style: .alert)
-            self.present(alertVC, animated: true, completion: {
-                APIManager.GetUserInfo(userId: KeychainManager.instance.keychain["uuid"]!, completionHandler: { JSON in
-                    
-                    if (JSON["status"] as! Int) == 200 {
-                        var dicarr: [Dictionary<String, AnyObject>] = (JSON["assets"] as! NSArray) as! [Dictionary<String, AnyObject>]
-                        DataManager.instance.property = dicarr[0]["value"] as! Int
-                        self.property.text = "\(DataManager.instance.property) \(self.unit)"
 
-                        alertVC.dismiss(animated: false, completion: nil)
-                    }else if (JSON["status"] as! Int) == 400 && (JSON["message"] as! String) == "User not found!" {
-                        alertVC.dismiss(animated: false, completion: {
-                            let alertVC = PMAlertController(title: "エラー", description: "ユーザーが見つかりません。初期化して登録しなおしますか？", image: UIImage(named: ""), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "再読み込み", style: .cancel, action: { () -> Void in
-                                alertVC.dismiss(animated: false, completion: {
-                                    self.GetUserInfo()
-                                })
-                            }))
-                            
-                            alertVC.addAction(PMAlertAction(title: "初期化", style: .default, action: { () in
-                                alertVC.dismiss(animated: false, completion: {
-                                    let storyboard: UIStoryboard = self.storyboard!
-                                    let nextVC = storyboard.instantiateViewController(withIdentifier: "Register")
-                                    self.present(nextVC, animated: true, completion: nil)
-                                })
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        })
-                    }else{
-                        alertVC.dismiss(animated: false, completion: {
-                            let alertVC = PMAlertController(title: "エラー", description: "\(JSON["message"]!)", image: UIImage(named: ""), style: .alert)
-                            
-                            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                            }))
-                            self.present(alertVC, animated: true, completion: nil)
-                        })
-                    }
-                })
-            })
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        tabBarController?.tabBar.isHidden = false
+        propertyLabel.text = formattedBalance(DataManager.instance.balance)
+        updateAccountFields()
+        refreshSnapshot(showLoader: false)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    private func configureKeyboardAccessory() {
+        let keyboardHeader = UIToolbar(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 44))
+        keyboardHeader.barStyle = .default
+        keyboardHeader.sizeToFit()
+        let spacer = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil)
+        let done = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(commitButtonTapped))
+        keyboardHeader.items = [spacer, done]
+        amountField.inputAccessoryView = keyboardHeader
+    }
+
+    private func refreshSnapshot(showLoader: Bool) {
+        guard let accountId = KeychainManager.instance.accountId else { return }
+        var alert: PMAlertController?
+        if showLoader {
+            alert = PMAlertController(title: "通信中", description: "アカウント情報を取得しています", image: nil, style: .alert)
+            present(alert!, animated: true)
         }
-        
-    }
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
-    func changeTextField (sender: NSNotification) {
-        if sender.object as! UITextField == amountField{
-            let text = (sender.object as! UITextField).text
-            var qrmsg = ""
-            if text == "" {
-                qrmsg = "\(qrstr)\"amount\":0}"
-            } else {
-                qrmsg = "\(qrstr)\"amount\":\(text!)}"
+        Task {
+            do {
+                let snapshot = try await service.fetchSnapshot(accountId: accountId)
+                let balance = service.parseBalance(from: snapshot.balances)
+                DataManager.instance.balance = balance
+                await MainActor.run {
+                    self.propertyLabel.text = self.formattedBalance(balance)
+                    alert?.dismiss(animated: true)
+                }
+            } catch {
+                await MainActor.run {
+                    alert?.dismiss(animated: true)
+                    self.presentError(message: error.localizedDescription)
+                }
             }
-            qr = createQRCode(message: qrmsg)
-            qrImg.image = qr
         }
     }
-    
-    func commitButtonTapped (){
-        self.view.endEditing(true)
+
+    private func updateAccountFields() {
+        accountLabel.text = KeychainManager.instance.accountId
+        pubkeyLabel.text = KeychainManager.instance.publicKeyHex
     }
 
-    @IBAction func OnCopy(_ sender: Any) {
+    @objc private func changeTextField(_ notification: Notification) {
+        guard notification.object as? UITextField === amountField else { return }
+        let value = Int(amountField.text ?? "") ?? 0
+        updateQR(amount: value)
+    }
+
+    private func updateQR(amount: Int) {
+        guard let account = KeychainManager.instance.accountId else { return }
+        let payload = [
+            "account": account,
+            "amount": amount,
+            "asset": service.config.assetDefinitionId
+        ] as [String: Any]
+        if let data = try? JSONSerialization.data(withJSONObject: payload, options: []),
+           let message = String(data: data, encoding: .utf8) {
+            qrImage = createQRCode(message: message)
+            qrImg.image = qrImage
+        }
+    }
+
+    @objc private func commitButtonTapped() {
+        view.endEditing(true)
+    }
+
+    @IBAction private func onCopy(_ sender: Any) {
+        UIPasteboard.general.string = KeychainManager.instance.accountId
         var style = ToastStyle()
-        style.shadowColor = UIColor.hex(hex: color, alpha: 1)
-        style.backgroundColor = UIColor.hex(hex: color, alpha: 1)
-        style.messageColor = UIColor.white
-        (sender as! UIButton).makeToast("copy to clipboard!", duration:1.0, position: .center, style: style)
-        let board = UIPasteboard.general.string = "\(KeychainManager.instance.keychain["publicKey"]!)"
-
+        style.shadowColor = UIColor.hex(hex: colorHex, alpha: 1)
+        style.backgroundColor = UIColor.hex(hex: colorHex, alpha: 1)
+        style.messageColor = .white
+        if let button = sender as? UIView {
+            button.makeToast("copy to clipboard!", duration: 1.0, position: .center, style: style)
+        }
     }
- 
+
+    @IBAction private func resetUserData(_ sender: Any) {
+        KeychainManager.instance.clearSession()
+        DataManager.instance.balance = .zero
+        DataManager.instance.transactions = []
+        navigateToRegister()
+    }
+
+    private func navigateToRegister() {
+        let storyboard = storyboard ?? UIStoryboard(name: "Main", bundle: nil)
+        if let register = storyboard.instantiateViewController(withIdentifier: "Register") as UIViewController? {
+            present(register, animated: true)
+        }
+    }
+
+    private func presentError(message: String) {
+        let alert = PMAlertController(title: "エラー", description: message, image: nil, style: .alert)
+        alert.addAction(PMAlertAction(title: "OK", style: .cancel, action: nil))
+        present(alert, animated: true)
+    }
+
+    private func formattedBalance(_ balance: Decimal) -> String {
+        "\(balance.plainString) \(unit)"
+    }
+
+    private func applyGlassStyling() {
+        [accountLabel, pubkeyLabel].forEach { field in
+            field?.applyGlassInputStyle()
+            field?.enforceHeight(52)
+        }
+        amountField.applyGlassInputStyle()
+        amountField.enforceHeight(56)
+        propertyLabel.textColor = UIColor.glassPrimaryText
+        propertyLabel.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        propertyLabel.numberOfLines = 0
+        propertyLabel.adjustsFontForContentSizeCategory = true
+        view.tintColor = UIColor.hex(hex: colorHex, alpha: 1)
+    }
+
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if amountField.text == "" && string == "0" {
+        if textField === amountField,
+           (textField.text?.isEmpty ?? true),
+           string == "0" {
             return false
         }
         return true
     }
-    
-    @IBAction func ResetUserData(_ sender: Any) {
-        let keychain = KeychainManager.instance.keychain
-        keychain["privateKey"] = ""
-        keychain["publicKey"] = ""
-        let storyboard: UIStoryboard = self.storyboard!
-        let nextVC = storyboard.instantiateViewController(withIdentifier: "Register")
-        self.present(nextVC, animated: true, completion: nil)
-    }
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
-
-
