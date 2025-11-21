@@ -17,10 +17,11 @@
 
 
 import UIKit
-import AVFoundation
+@preconcurrency import AVFoundation
 import PMAlertController
 
-final class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDelegate {
+@MainActor
+final class QRViewController: UIViewController {
     @IBOutlet private weak var cameraRegion: UIImageView!
 
     private let captureSession = AVCaptureSession()
@@ -136,3 +137,5 @@ final class QRViewController: UIViewController, AVCaptureMetadataOutputObjectsDe
         return try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any]
     }
 }
+
+extension QRViewController: @MainActor AVCaptureMetadataOutputObjectsDelegate {}

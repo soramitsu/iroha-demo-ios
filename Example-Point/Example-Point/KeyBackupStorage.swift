@@ -32,6 +32,7 @@ enum KeyBackupStorageError: Error, LocalizedError {
     }
 }
 
+@MainActor
 final class KeyBackupStorage {
     static let shared = KeyBackupStorage()
 

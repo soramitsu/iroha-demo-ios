@@ -1,5 +1,6 @@
 import UIKit
 
+@MainActor
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
     private var themeObserver: NSObjectProtocol?
@@ -35,6 +36,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         _ = IrohaConnectCoordinator.shared.handleCallback(url: url)
     }
 
+    @MainActor
     deinit {
         if let observer = themeObserver {
             NotificationCenter.default.removeObserver(observer)

@@ -54,12 +54,12 @@ struct Mnemonic: Equatable {
     let words: [String]
     let entropy: Data
 
-    var phrase: String {
+var phrase: String {
         words.joined(separator: " ")
     }
 }
 
-final class MnemonicGenerator {
+final class MnemonicGenerator: @unchecked Sendable {
     static let shared = MnemonicGenerator()
 
     private let wordList: [String]

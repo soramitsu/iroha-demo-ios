@@ -28,6 +28,7 @@ enum ToriiServiceError: Error, LocalizedError {
     }
 }
 
+@MainActor
 final class ToriiService {
     static let shared = ToriiService()
 

@@ -113,13 +113,15 @@ final class ReceiveViewController: UIViewController, UITextFieldDelegate {
     }
 
     @IBAction private func onCopy(_ sender: Any) {
-        UIPasteboard.general.string = KeychainManager.instance.accountId
+        UIPasteboard.general.string = accountLabel.text?.isEmpty == false ? accountLabel.text : KeychainManager.instance.accountId
+        let feedback = UIImpactFeedbackGenerator(style: .light)
+        feedback.impactOccurred()
         var style = ToastStyle()
         style.shadowColor = UIColor.hex(hex: colorHex, alpha: 1)
         style.backgroundColor = UIColor.hex(hex: colorHex, alpha: 1)
         style.messageColor = .white
         if let button = sender as? UIView {
-            button.makeToast("copy to clipboard!", duration: 1.0, position: .center, style: style)
+            button.makeToast("コピーしました", duration: 1.0, position: .center, style: style)
         }
     }
 
@@ -150,15 +152,18 @@ final class ReceiveViewController: UIViewController, UITextFieldDelegate {
     private func applyGlassStyling() {
         [accountLabel, pubkeyLabel].forEach { field in
             field?.applyGlassInputStyle()
+            field?.font = UIFont.sora(.medium, size: 14)
             field?.enforceHeight(52)
         }
         amountField.applyGlassInputStyle()
+        amountField.font = UIFont.sora(.semiBold, size: 18)
         amountField.enforceHeight(56)
         propertyLabel.textColor = UIColor.glassPrimaryText
-        propertyLabel.font = UIFont.systemFont(ofSize: 24, weight: .semibold)
+        propertyLabel.font = UIFont.sora(.bold, size: 26)
         propertyLabel.numberOfLines = 0
         propertyLabel.adjustsFontForContentSizeCategory = true
         view.tintColor = UIColor.hex(hex: colorHex, alpha: 1)
+        headerback.applySoraFontsRecursively()
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

@@ -10,6 +10,7 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
 
     private let colorHex = Bundle.main.infoDictionary?["AppColor"] as? String ?? "E4232D"
     private let service = ToriiService.shared
+    private var balanceSummaryLabel: UILabel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,12 +23,72 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         toField.enforceHeight(56)
         amountField.enforceHeight(56)
         sendButton.enforceHeight(56)
+        toField.placeholder = "送信先アカウントID"
+        amountField.placeholder = "数量 (\(service.config.unit))"
+
+        let summaryCard = UIView()
+        summaryCard.translatesAutoresizingMaskIntoConstraints = false
+        summaryCard.applyGlassCardStyle(cornerRadius: 22)
+        view.addSubview(summaryCard)
+
+        let summaryStack = UIStackView()
+        summaryStack.axis = .vertical
+        summaryStack.spacing = 8
+        summaryStack.translatesAutoresizingMaskIntoConstraints = false
+        summaryStack.isLayoutMarginsRelativeArrangement = true
+        summaryStack.layoutMargins = UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16)
+        summaryCard.addSubview(summaryStack)
+
+        let summaryTitle = UILabel()
+        summaryTitle.text = "Available"
+        summaryTitle.font = UIFont.sora(.semiBold, size: 13)
+        summaryTitle.textColor = UIColor.glassSecondaryText
+
+        let balanceLabel = UILabel()
+        balanceLabel.font = UIFont.sora(.bold, size: 28)
+        balanceLabel.textColor = UIColor.glassPrimaryText
+        balanceLabel.adjustsFontForContentSizeCategory = true
+        balanceLabel.text = "\(DataManager.instance.balance.plainString) \(service.config.unit)"
+        balanceSummaryLabel = balanceLabel
+
+        let networkLabel = UILabel()
+        networkLabel.textColor = UIColor.glassSecondaryText
+        networkLabel.font = UIFont.sora(.medium, size: 13)
+        networkLabel.text = "Network: \(service.config.chainId)"
+
+        summaryStack.addArrangedSubview(summaryTitle)
+        summaryStack.addArrangedSubview(balanceLabel)
+        summaryStack.addArrangedSubview(networkLabel)
+
+        NSLayoutConstraint.activate([
+            summaryCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            summaryCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            summaryCard.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 12),
+
+            summaryStack.leadingAnchor.constraint(equalTo: summaryCard.leadingAnchor),
+            summaryStack.trailingAnchor.constraint(equalTo: summaryCard.trailingAnchor),
+            summaryStack.topAnchor.constraint(equalTo: summaryCard.topAnchor),
+            summaryStack.bottomAnchor.constraint(equalTo: summaryCard.bottomAnchor)
+        ])
+
+        let updateSendButtonState: () -> Void = { [weak self] in
+            guard let self else { return }
+            let destinationFilled = !(self.toField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
+            let amount = Decimal(string: self.amountField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") ?? .zero
+            let validAmount = amount > 0
+            self.sendButton.isEnabled = destinationFilled && validAmount
+            self.sendButton.alpha = self.sendButton.isEnabled ? 1.0 : 0.65
+        }
+        toField.addAction(UIAction { _ in updateSendButtonState() }, for: .editingChanged)
+        amountField.addAction(UIAction { _ in updateSendButtonState() }, for: .editingChanged)
+        updateSendButtonState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.topViewController?.navigationItem.title = "Send"
         tabBarController?.tabBar.isHidden = false
+        balanceSummaryLabel?.text = "\(DataManager.instance.balance.plainString) \(service.config.unit)"
     }
 
     override func viewDidLayoutSubviews() {
@@ -103,6 +164,8 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         alert.addAction(PMAlertAction(title: "OK", style: .default) { [weak self] in
             self?.toField.text = ""
             self?.amountField.text = ""
+            self?.sendButton.isEnabled = false
+            self?.sendButton.alpha = 0.65
         })
         present(alert, animated: true)
     }
@@ -126,5 +189,7 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         loadViewIfNeeded()
         toField.text = receiver
         amountField.text = amount
+        toField.sendActions(for: .editingChanged)
+        amountField.sendActions(for: .editingChanged)
     }
 }

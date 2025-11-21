@@ -4,6 +4,7 @@ import PMAlertController
 import Toast_Swift
 import IrohaSwift
 
+@MainActor
 final class SoraNexusOnboardingViewController: UIViewController {
     private let service = ToriiService.shared
     private let backupStorage = KeyBackupStorage.shared
@@ -481,7 +482,7 @@ final class SoraNexusOnboardingViewController: UIViewController {
     }
 }
 
-extension SoraNexusOnboardingViewController: IrohaConnectCoordinatorDelegate {
+extension SoraNexusOnboardingViewController: @MainActor IrohaConnectCoordinatorDelegate {
     func irohaConnectCoordinator(_ coordinator: IrohaConnectCoordinator, didReceive payload: IrohaConnectPayload) {
         handleIrohaConnectPayload(payload)
     }

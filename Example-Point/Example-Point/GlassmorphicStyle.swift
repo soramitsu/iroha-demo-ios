@@ -82,7 +82,7 @@ private final class DecorativeBlurView: UIVisualEffectView {
 }
 
 private let glassBlurTag = 9_812_334
-private var associatedSakuraKey: UInt8 = 0
+@MainActor private var associatedSakuraKey: UInt8 = 0
 
 extension UIView {
     func applyGlassCardStyle(cornerRadius: CGFloat = 24, includeBlur: Bool = true) {
@@ -142,7 +142,7 @@ extension UITextField {
     }
 }
 
-private var gradientAssociationKey: UInt8 = 0
+@MainActor private var gradientAssociationKey: UInt8 = 0
 
 extension UIButton {
     private var glassGradientLayer: CAGradientLayer? {

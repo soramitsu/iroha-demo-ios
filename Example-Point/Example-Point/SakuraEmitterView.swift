@@ -1,6 +1,7 @@
 import UIKit
-import CoreMotion
+@preconcurrency import CoreMotion
 
+@MainActor
 final class SakuraEmitterView: UIView {
     private let motionManager = CMMotionManager()
     private var emitterLayer: CAEmitterLayer { layer as! CAEmitterLayer } // swiftlint:disable:this force_cast

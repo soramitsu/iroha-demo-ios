@@ -26,6 +26,7 @@ enum ThemeMode: Int, CaseIterable {
     }
 }
 
+@MainActor
 final class ThemeManager {
     static let shared = ThemeManager()
 

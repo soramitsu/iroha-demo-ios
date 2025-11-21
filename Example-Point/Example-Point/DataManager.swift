@@ -18,6 +18,7 @@
 import Foundation
 import IrohaSwift
 
+@MainActor
 class DataManager {
     static let instance: DataManager = DataManager()
     private init() {

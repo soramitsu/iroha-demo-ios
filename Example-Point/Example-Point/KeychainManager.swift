@@ -19,6 +19,7 @@
 import Foundation
 import KeychainAccess
 
+@MainActor
 class KeychainManager{
     static let instance: KeychainManager = KeychainManager()
     private init() {}

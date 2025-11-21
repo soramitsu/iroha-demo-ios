@@ -7,6 +7,7 @@ Pod::Spec.new do |s|
   s.license          = { :type => 'Apache-2.0', :file => 'LICENSE' }
   s.author           = { 'Hyperledger Iroha' => 'info@soramitsu.co.jp' }
   s.platform         = :ios, '15.0'
+  s.swift_version    = '6.0'
   s.vendored_frameworks = 'NoritoBridge.xcframework'
   s.source           = { :path => '.' }
 end

@@ -56,6 +56,7 @@ protocol IrohaConnectCoordinatorDelegate: AnyObject {
     func irohaConnectCoordinator(_ coordinator: IrohaConnectCoordinator, didFail error: IrohaConnectError)
 }
 
+@MainActor
 final class IrohaConnectCoordinator {
     static let shared = IrohaConnectCoordinator()
 

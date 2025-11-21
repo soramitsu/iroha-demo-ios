@@ -41,6 +41,7 @@ final class WalletTableViewController: UITableViewController {
         tableView.estimatedSectionHeaderHeight = 160
         tableView.contentInset = UIEdgeInsets(top: 16, left: 0, bottom: 32, right: 0)
         tableView.separatorStyle = .none
+        tableView.showsVerticalScrollIndicator = false
         tableView.register(TransactionCell.self, forCellReuseIdentifier: "TransactionCell")
         configureDataSource()
 
@@ -157,8 +158,8 @@ final class WalletTableViewController: UITableViewController {
 
         let stack = UIStackView()
         stack.axis = .vertical
-        stack.alignment = .leading
-        stack.spacing = 8
+        stack.alignment = .fill
+        stack.spacing = 12
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.isLayoutMarginsRelativeArrangement = true
         stack.layoutMargins = UIEdgeInsets(top: 20, left: 20, bottom: 20, right: 20)
@@ -171,12 +172,39 @@ final class WalletTableViewController: UITableViewController {
             stack.bottomAnchor.constraint(equalTo: container.bottomAnchor)
         ])
 
+        let headerRow = UIStackView()
+        headerRow.axis = .horizontal
+        headerRow.alignment = .center
+        headerRow.spacing = 10
+        stack.addArrangedSubview(headerRow)
+
+        let accent = UIView()
+        accent.translatesAutoresizingMaskIntoConstraints = false
+        accent.backgroundColor = UIColor.iroha
+        accent.layer.cornerRadius = 6
+        headerRow.addArrangedSubview(accent)
+        accent.enforceHeight(12)
+        NSLayoutConstraint.activate([
+            accent.widthAnchor.constraint(equalToConstant: 12)
+        ])
+
         let title = UILabel()
         title.text = "残高"
-        title.font = UIFont.sora(.semiBold, size: 14)
+        title.font = UIFont.sora(.semiBold, size: 15)
         title.textColor = UIColor.glassSecondaryText
         title.adjustsFontForContentSizeCategory = true
-        stack.addArrangedSubview(title)
+        headerRow.addArrangedSubview(title)
+
+        let chip = UILabel()
+        chip.text = " \(config.assetDisplayName.uppercased()) "
+        chip.font = UIFont.sora(.semiBold, size: 12)
+        chip.textColor = UIColor.iroha
+        chip.backgroundColor = UIColor.iroha.withAlphaComponent(0.12)
+        chip.layer.cornerRadius = 12
+        chip.layer.masksToBounds = true
+        chip.setContentCompressionResistancePriority(.required, for: .horizontal)
+        headerRow.addArrangedSubview(chip)
+        headerRow.addArrangedSubview(UIView())
 
         let balanceLabel = UILabel()
         balanceLabel.font = UIFont.sora(.bold, size: 36)
@@ -186,15 +214,106 @@ final class WalletTableViewController: UITableViewController {
         stack.addArrangedSubview(balanceLabel)
         self.balanceLabel = balanceLabel
 
+        let networkLabel = UILabel()
+        networkLabel.font = UIFont.sora(.medium, size: 13)
+        networkLabel.textColor = UIColor.glassSecondaryText
+        networkLabel.text = "Chain: \(config.chainId)"
+        networkLabel.adjustsFontForContentSizeCategory = true
+        stack.addArrangedSubview(networkLabel)
+        stack.setCustomSpacing(6, after: networkLabel)
+
         if let accountId = KeychainManager.instance.accountId {
+            let accountRow = UIStackView()
+            accountRow.axis = .horizontal
+            accountRow.alignment = .center
+            accountRow.spacing = 10
             let accountLabel = UILabel()
             accountLabel.font = UIFont.sora(.medium, size: 13)
             accountLabel.adjustsFontForContentSizeCategory = true
             accountLabel.textColor = UIColor.glassSecondaryText
             accountLabel.numberOfLines = 0
             accountLabel.text = accountId
-            stack.addArrangedSubview(accountLabel)
+            accountRow.addArrangedSubview(accountLabel)
+
+            let copyButton = UIButton(type: .system)
+            copyButton.setImage(UIImage(systemName: "doc.on.doc"), for: .normal)
+            copyButton.tintColor = UIColor.glassPrimaryText
+            copyButton.backgroundColor = UIColor.glassFieldBackground
+            copyButton.layer.cornerRadius = 12
+            copyButton.contentEdgeInsets = UIEdgeInsets(top: 8, left: 10, bottom: 8, right: 10)
+            copyButton.setContentHuggingPriority(.required, for: .horizontal)
+            let copyAction = UIAction { [weak self] _ in
+                UIPasteboard.general.string = accountId
+                let haptic = UIImpactFeedbackGenerator(style: .light)
+                haptic.impactOccurred()
+                UIAccessibility.post(notification: .announcement, argument: "Account ID copied")
+            }
+            copyButton.addAction(copyAction, for: .touchUpInside)
+            accountRow.addArrangedSubview(copyButton)
+            stack.addArrangedSubview(accountRow)
         }
+
+        let actionsRow = UIStackView()
+        actionsRow.axis = .horizontal
+        actionsRow.spacing = 12
+        actionsRow.distribution = .fillEqually
+        let sendButton = UIButton(type: .system)
+        sendButton.setTitle("Send", for: .normal)
+        sendButton.setImage(UIImage(systemName: "arrow.up.right"), for: .normal)
+        sendButton.tintColor = .white
+        sendButton.applyGlassButtonStyle(accent: UIColor.iroha)
+        sendButton.titleLabel?.font = UIFont.sora(.semiBold, size: 16)
+        sendButton.contentHorizontalAlignment = .center
+        sendButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16)
+        sendButton.enforceHeight(52)
+        sendButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -6, bottom: 0, right: 6)
+        let sendAction = UIAction { [weak self] _ in
+            let feedback = UIImpactFeedbackGenerator(style: .medium)
+            feedback.impactOccurred()
+            guard let tabBar = self?.tabBarController else { return }
+            if let index = tabBar.viewControllers?.firstIndex(where: { viewController in
+                if let navigation = viewController as? UINavigationController {
+                    return navigation.viewControllers.contains(where: { $0 is SendViewController })
+                }
+                return viewController is SendViewController
+            }) {
+                tabBar.selectedIndex = index
+            }
+        }
+        sendButton.addAction(sendAction, for: .touchUpInside)
+
+        let receiveButton = UIButton(type: .system)
+        receiveButton.setTitle("Receive", for: .normal)
+        receiveButton.setImage(UIImage(systemName: "arrow.down.left"), for: .normal)
+        receiveButton.tintColor = .white
+        receiveButton.applyGlassButtonStyle(accent: UIColor.irohaGreen)
+        receiveButton.titleLabel?.font = UIFont.sora(.semiBold, size: 16)
+        receiveButton.contentHorizontalAlignment = .center
+        receiveButton.contentEdgeInsets = UIEdgeInsets(top: 14, left: 16, bottom: 14, right: 16)
+        receiveButton.enforceHeight(52)
+        receiveButton.imageEdgeInsets = UIEdgeInsets(top: 0, left: -6, bottom: 0, right: 6)
+        let receiveAction = UIAction { [weak self] _ in
+            let feedback = UIImpactFeedbackGenerator(style: .medium)
+            feedback.impactOccurred()
+            guard let tabBar = self?.tabBarController else { return }
+            if let index = tabBar.viewControllers?.firstIndex(where: { viewController in
+                if let navigation = viewController as? UINavigationController {
+                    return navigation.viewControllers.contains(where: { $0 is ReceiveViewController })
+                }
+                return viewController is ReceiveViewController
+            }) {
+                tabBar.selectedIndex = index
+            }
+        }
+        receiveButton.addAction(receiveAction, for: .touchUpInside)
+        actionsRow.addArrangedSubview(sendButton)
+        actionsRow.addArrangedSubview(receiveButton)
+        stack.setCustomSpacing(18, after: balanceLabel)
+        stack.addArrangedSubview(actionsRow)
+
+        container.layoutIfNeeded()
+        sendButton.refreshGlassButtonStyleLayout()
+        receiveButton.refreshGlassButtonStyleLayout()
 
         container.applySoraFontsRecursively()
         return container

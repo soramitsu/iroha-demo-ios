@@ -8,14 +8,25 @@
 
 /* Begin PBXBuildFile section */
 		0EAC59A451D7BAF1DC47AC9C /* Pods_Example_PointTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 533798859D478E7E8744FFE2 /* Pods_Example_PointTests.framework */; };
+		15E6AC2B97114BD88EE325C7 /* Sora-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */; };
+		1E41C5A1AA8B4056A0991D0D /* Sora-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */; };
+		2F997902DE8A45E0856DD2C1 /* Sora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */; };
+		31348494B0CA44E8AACA4B41 /* Sora-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */; };
+		31C3EB81C1284BFEA337C490 /* KeyBackupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F400AD73F94EE493F887D6 /* KeyBackupStorage.swift */; };
 		33CE66E58C3C05AA1820F31A /* Pods_Example_Point.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4A577D7F09E9313C38C33393 /* Pods_Example_Point.framework */; };
+		33E412B647E5412BA5CDE73B /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */; };
+		40AE52C8F92F437C9641622A /* Sora-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */; };
+		471E2886C66A4789BCCC8021 /* CryptoHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C38B844B94C4BA97A0D6E /* CryptoHelpers.swift */; };
+		4AC666ACF8A24DCA90E4AD8A /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617377F8A27D40BC8DD11481 /* Mnemonic.swift */; };
+		56FB9B71333F402BB54478C1 /* IrohaConnectCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4635F605884D3F873A75E5 /* IrohaConnectCoordinatorTests.swift */; };
+		635434508986471DAD4E5FDC /* ToriiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40980695147D4F88B2EC00CA /* ToriiService.swift */; };
+		637424673D4D46E098C58BF5 /* KeychainSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C187A40F2464ACD95562D21 /* KeychainSession.swift */; };
 		6DA315261DF979D300C5325E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA315251DF979D300C5325E /* AppDelegate.swift */; };
 		6DA315281DF979D300C5325E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA315271DF979D300C5325E /* ViewController.swift */; };
 		6DA3152B1DF979D300C5325E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA315291DF979D300C5325E /* Main.storyboard */; };
 		6DA3152D1DF979D300C5325E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DA3152C1DF979D300C5325E /* Assets.xcassets */; };
 		6DA315301DF979D300C5325E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6DA3152E1DF979D300C5325E /* LaunchScreen.storyboard */; };
 		6DA3153B1DF979D300C5325E /* Example_PointTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA3153A1DF979D300C5325E /* Example_PointTests.swift */; };
-		FBC7A1C52C1F620900E0D9A1 /* ColorExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC7A1C42C1F620900E0D9A1 /* ColorExtensionTests.swift */; };
 		6DA315461DF979D300C5325E /* Example_PointUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DA315451DF979D300C5325E /* Example_PointUITests.swift */; };
 		6DB47D371DFDCF0800C908E9 /* SendViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DB47D361DFDCF0800C908E9 /* SendViewController.swift */; };
 		6DB47D391DFDCF2900C908E9 /* WalletTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DB47D381DFDCF2900C908E9 /* WalletTableViewController.swift */; };
@@ -27,41 +38,30 @@
 		6DF0FF421E01930B00ABD179 /* RegisterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF411E01930B00ABD179 /* RegisterViewController.swift */; };
 		6DF0FF5B1E028E8B00ABD179 /* TransactionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF5A1E028E8B00ABD179 /* TransactionCell.swift */; };
 		6DF0FF601E02945400ABD179 /* ColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF0FF5F1E02945400ABD179 /* ColorExtension.swift */; };
-		FBC7A1C32C1F5D5C00E0D9A1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC7A1C22C1F5D5C00E0D9A1 /* SceneDelegate.swift */; };
-		F282BA4A82B540059D6A1858 /* ToriiConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AB302D7CE04ACBB2508CE1 /* ToriiConfiguration.swift */; };
-		635434508986471DAD4E5FDC /* ToriiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40980695147D4F88B2EC00CA /* ToriiService.swift */; };
-		8757E3A6291D49F0AEEFF9ED /* GlassmorphicStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8757E3A528F24936B0F7B58B /* GlassmorphicStyle.swift */; };
-		637424673D4D46E098C58BF5 /* KeychainSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C187A40F2464ACD95562D21 /* KeychainSession.swift */; };
-		471E2886C66A4789BCCC8021 /* CryptoHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 521C38B844B94C4BA97A0D6E /* CryptoHelpers.swift */; };
-		EA9BEAC0EA5A4CA1AAD006F3 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1352316DC04ED28699B34B /* Notifications.swift */; };
-		4AC666ACF8A24DCA90E4AD8A /* Mnemonic.swift in Sources */ = {isa = PBXBuildFile; fileRef = 617377F8A27D40BC8DD11481 /* Mnemonic.swift */; };
-		CB060DD66B224359AE5CD516 /* SoraNexusKeyMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DC75A50C6741A4B80D518C /* SoraNexusKeyMaterial.swift */; };
-		31C3EB81C1284BFEA337C490 /* KeyBackupStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F400AD73F94EE493F887D6 /* KeyBackupStorage.swift */; };
-		C9E91C9CA4CF49F3B7188377 /* IrohaConnectCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BDF08357B643C8A328F5CF /* IrohaConnectCoordinator.swift */; };
-		AED822DE8CB04BCF8DBC05E5 /* SoraNexusOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624684038AA94F7DB298621A /* SoraNexusOnboardingViewController.swift */; };
-		8AA6F95AF774492F879D2BBA /* MnemonicGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9465E94959943759BC8352D /* MnemonicGeneratorTests.swift */; };
-		56FB9B71333F402BB54478C1 /* IrohaConnectCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4635F605884D3F873A75E5 /* IrohaConnectCoordinatorTests.swift */; };
+		70C9D0CE36714EFF9924FA96 /* Sora-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */; };
 		729C284446524F29AD4FBD4D /* SoraFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F91F337066940DF805548E1 /* SoraFont.swift */; };
+		74897F93A6EC4C6B9042EA52 /* Sora-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */; };
+		8757E3A6291D49F0AEEFF9ED /* GlassmorphicStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8757E3A528F24936B0F7B58B /* GlassmorphicStyle.swift */; };
+		8758A55F73804DECBB92F8E6 /* Sora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */; };
 		88BFB773BAD84132929215C0 /* SakuraEmitterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36BF7F5201524C0FB0B5D77C /* SakuraEmitterView.swift */; };
-		ec174591f92344f29d429f04 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940FBFAF2C3E448E928DA01E /* ThemeManager.swift */; };
+		8AA6F95AF774492F879D2BBA /* MnemonicGeneratorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9465E94959943759BC8352D /* MnemonicGeneratorTests.swift */; };
+		A400E3A15F6540A7814B85B9 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */; };
+		AE680A62B5CC43058FA30FEF /* Sora-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */; };
+		AED822DE8CB04BCF8DBC05E5 /* SoraNexusOnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 624684038AA94F7DB298621A /* SoraNexusOnboardingViewController.swift */; };
+		B5C95FDEAE27480C86FE8354 /* Sora-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */; };
+		C64DED9C3D1840B0A1486BE8 /* Sora-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */; };
+		C9E91C9CA4CF49F3B7188377 /* IrohaConnectCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6BDF08357B643C8A328F5CF /* IrohaConnectCoordinator.swift */; };
+		CB060DD66B224359AE5CD516 /* SoraNexusKeyMaterial.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8DC75A50C6741A4B80D518C /* SoraNexusKeyMaterial.swift */; };
+		DA6A05F477024B47BCBE846E /* Sora-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */; };
+		E85D9EF68021D159116D9841 /* Pods_Example_PointUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFCD79830BD7353C2ACB39D /* Pods_Example_PointUITests.framework */; };
+		EA9BEAC0EA5A4CA1AAD006F3 /* Notifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B1352316DC04ED28699B34B /* Notifications.swift */; };
+		F282BA4A82B540059D6A1858 /* ToriiConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76AB302D7CE04ACBB2508CE1 /* ToriiConfiguration.swift */; };
+		FB5B6BBC52534C939A1D0B96 /* Sora-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */; };
+		FBC7A1C32C1F5D5C00E0D9A1 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC7A1C22C1F5D5C00E0D9A1 /* SceneDelegate.swift */; };
+		FBC7A1C52C1F620900E0D9A1 /* ColorExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC7A1C42C1F620900E0D9A1 /* ColorExtensionTests.swift */; };
 		d4395c817c044d97b22454c9 /* ThemeSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 874220AD8DF240B1A0652BA0 /* ThemeSettingsViewController.swift */; };
 		d7329C4851524922B3085DF4 /* Sora-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6942623D37024A798DBC5128 /* Sora-Bold.ttf */; };
-		40AE52C8F92F437C9641622A /* Sora-BoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */; };
-		C64DED9C3D1840B0A1486BE8 /* Sora-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */; };
-		74897F93A6EC4C6B9042EA52 /* Sora-ExtraBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */; };
-		33E412B647E5412BA5CDE73B /* Sora-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */; };
-		B5C95FDEAE27480C86FE8354 /* Sora-ExtraLightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */; };
-		DA6A05F477024B47BCBE846E /* Sora-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */; };
-		AE680A62B5CC43058FA30FEF /* Sora-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */; };
-		31348494B0CA44E8AACA4B41 /* Sora-LightItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */; };
-		2F997902DE8A45E0856DD2C1 /* Sora-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */; };
-		1E41C5A1AA8B4056A0991D0D /* Sora-MediumItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */; };
-		A400E3A15F6540A7814B85B9 /* Sora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */; };
-		8758A55F73804DECBB92F8E6 /* Sora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */; };
-		FB5B6BBC52534C939A1D0B96 /* Sora-SemiBoldItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */; };
-		70C9D0CE36714EFF9924FA96 /* Sora-Thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */; };
-		15E6AC2B97114BD88EE325C7 /* Sora-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */; };
-		E85D9EF68021D159116D9841 /* Pods_Example_PointUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2AFCD79830BD7353C2ACB39D /* Pods_Example_PointUITests.framework */; };
+		ec174591f92344f29d429f04 /* ThemeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940FBFAF2C3E448E928DA01E /* ThemeManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -98,10 +98,22 @@
 /* Begin PBXFileReference section */
 		008DB154384CEA031C6653C5 /* Pods-Example-Point.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-Point.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example-Point/Pods-Example-Point.debug.xcconfig"; sourceTree = "<group>"; };
 		2AFCD79830BD7353C2ACB39D /* Pods_Example_PointUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_PointUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		32F400AD73F94EE493F887D6 /* KeyBackupStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBackupStorage.swift; sourceTree = "<group>"; };
+		36BF7F5201524C0FB0B5D77C /* SakuraEmitterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SakuraEmitterView.swift; sourceTree = "<group>"; };
+		3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ThinItalic.ttf"; sourceTree = "<group>"; };
 		3DADD915DC6B0EBBFE4EBEB9 /* Pods-Example-PointTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-PointTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example-PointTests/Pods-Example-PointTests.release.xcconfig"; sourceTree = "<group>"; };
+		40980695147D4F88B2EC00CA /* ToriiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToriiService.swift; sourceTree = "<group>"; };
+		45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
 		4A577D7F09E9313C38C33393 /* Pods_Example_Point.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_Point.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4ADCDA2AE306BDC7E0564E56 /* Pods-Example-Point.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-Point.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example-Point/Pods-Example-Point.release.xcconfig"; sourceTree = "<group>"; };
+		4C187A40F2464ACD95562D21 /* KeychainSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainSession.swift; sourceTree = "<group>"; };
+		521C38B844B94C4BA97A0D6E /* CryptoHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoHelpers.swift; sourceTree = "<group>"; };
 		533798859D478E7E8744FFE2 /* Pods_Example_PointTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example_PointTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Medium.ttf"; sourceTree = "<group>"; };
+		617377F8A27D40BC8DD11481 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
+		624684038AA94F7DB298621A /* SoraNexusOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraNexusOnboardingViewController.swift; sourceTree = "<group>"; };
+		6942623D37024A798DBC5128 /* Sora-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Bold.ttf"; sourceTree = "<group>"; };
+		6B1352316DC04ED28699B34B /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
 		6DA315221DF979D300C5325E /* Example-Point.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Example-Point.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA315251DF979D300C5325E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6DA315271DF979D300C5325E /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -111,7 +123,6 @@
 		6DA315311DF979D300C5325E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA315361DF979D300C5325E /* Example-PointTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Example-PointTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA3153A1DF979D300C5325E /* Example_PointTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_PointTests.swift; sourceTree = "<group>"; };
-		FBC7A1C42C1F620900E0D9A1 /* ColorExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensionTests.swift; sourceTree = "<group>"; };
 		6DA3153C1DF979D300C5325E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		6DA315411DF979D300C5325E /* Example-PointUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Example-PointUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DA315451DF979D300C5325E /* Example_PointUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Example_PointUITests.swift; sourceTree = "<group>"; };
@@ -128,43 +139,32 @@
 		6DF0FF5A1E028E8B00ABD179 /* TransactionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransactionCell.swift; sourceTree = "<group>"; };
 		6DF0FF5F1E02945400ABD179 /* ColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ColorExtension.swift; sourceTree = "<group>"; };
 		6DF0FF611E029B1200ABD179 /* Example-Point.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Example-Point.entitlements"; sourceTree = "<group>"; };
-		FBC7A1C22C1F5D5C00E0D9A1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
-		40980695147D4F88B2EC00CA /* ToriiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToriiService.swift; sourceTree = "<group>"; };
-		8757E3A528F24936B0F7B58B /* GlassmorphicStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassmorphicStyle.swift; sourceTree = "<group>"; };
-		4C187A40F2464ACD95562D21 /* KeychainSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainSession.swift; sourceTree = "<group>"; };
-		521C38B844B94C4BA97A0D6E /* CryptoHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CryptoHelpers.swift; sourceTree = "<group>"; };
-		6B1352316DC04ED28699B34B /* Notifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notifications.swift; sourceTree = "<group>"; };
+		6F91F337066940DF805548E1 /* SoraFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraFont.swift; sourceTree = "<group>"; };
+		712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
+		725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-MediumItalic.ttf"; sourceTree = "<group>"; };
 		76AB302D7CE04ACBB2508CE1 /* ToriiConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToriiConfiguration.swift; sourceTree = "<group>"; };
+		7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Thin.ttf"; sourceTree = "<group>"; };
+		874220AD8DF240B1A0652BA0 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
+		8757E3A528F24936B0F7B58B /* GlassmorphicStyle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlassmorphicStyle.swift; sourceTree = "<group>"; };
+		8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-BoldItalic.ttf"; sourceTree = "<group>"; };
 		8854A9C946B28FF6E57F8C8D /* Pods-Example-PointUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-PointUITests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example-PointUITests/Pods-Example-PointUITests.debug.xcconfig"; sourceTree = "<group>"; };
+		940FBFAF2C3E448E928DA01E /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
+		99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-LightItalic.ttf"; sourceTree = "<group>"; };
+		9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-SemiBold.ttf"; sourceTree = "<group>"; };
+		A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Regular.ttf"; sourceTree = "<group>"; };
+		A8DC75A50C6741A4B80D518C /* SoraNexusKeyMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraNexusKeyMaterial.swift; sourceTree = "<group>"; };
+		AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
+		B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Italic.ttf"; sourceTree = "<group>"; };
+		B6BDF08357B643C8A328F5CF /* IrohaConnectCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrohaConnectCoordinator.swift; sourceTree = "<group>"; };
+		C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraLight.ttf"; sourceTree = "<group>"; };
+		D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraBold.ttf"; sourceTree = "<group>"; };
+		DB4635F605884D3F873A75E5 /* IrohaConnectCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrohaConnectCoordinatorTests.swift; sourceTree = "<group>"; };
+		E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Light.ttf"; sourceTree = "<group>"; };
+		E9465E94959943759BC8352D /* MnemonicGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGeneratorTests.swift; sourceTree = "<group>"; };
 		F24D1BD952579B8FA1394383 /* Pods-Example-PointUITests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-PointUITests.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example-PointUITests/Pods-Example-PointUITests.release.xcconfig"; sourceTree = "<group>"; };
 		F79843B0F01F2A7F6DFB56FD /* Pods-Example-PointTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example-PointTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Example-PointTests/Pods-Example-PointTests.debug.xcconfig"; sourceTree = "<group>"; };
-		617377F8A27D40BC8DD11481 /* Mnemonic.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mnemonic.swift; sourceTree = "<group>"; };
-		A8DC75A50C6741A4B80D518C /* SoraNexusKeyMaterial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraNexusKeyMaterial.swift; sourceTree = "<group>"; };
-		32F400AD73F94EE493F887D6 /* KeyBackupStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyBackupStorage.swift; sourceTree = "<group>"; };
-		B6BDF08357B643C8A328F5CF /* IrohaConnectCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrohaConnectCoordinator.swift; sourceTree = "<group>"; };
-		624684038AA94F7DB298621A /* SoraNexusOnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraNexusOnboardingViewController.swift; sourceTree = "<group>"; };
-		E9465E94959943759BC8352D /* MnemonicGeneratorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MnemonicGeneratorTests.swift; sourceTree = "<group>"; };
-		DB4635F605884D3F873A75E5 /* IrohaConnectCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IrohaConnectCoordinatorTests.swift; sourceTree = "<group>"; };
-		6F91F337066940DF805548E1 /* SoraFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoraFont.swift; sourceTree = "<group>"; };
-		36BF7F5201524C0FB0B5D77C /* SakuraEmitterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SakuraEmitterView.swift; sourceTree = "<group>"; };
-		940FBFAF2C3E448E928DA01E /* ThemeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeManager.swift; sourceTree = "<group>"; };
-		874220AD8DF240B1A0652BA0 /* ThemeSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeSettingsViewController.swift; sourceTree = "<group>"; };
-		6942623D37024A798DBC5128 /* Sora-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Bold.ttf"; sourceTree = "<group>"; };
-		8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-BoldItalic.ttf"; sourceTree = "<group>"; };
-		D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraBold.ttf"; sourceTree = "<group>"; };
-		45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraBoldItalic.ttf"; sourceTree = "<group>"; };
-		C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraLight.ttf"; sourceTree = "<group>"; };
-		712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ExtraLightItalic.ttf"; sourceTree = "<group>"; };
-		B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Italic.ttf"; sourceTree = "<group>"; };
-		E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Light.ttf"; sourceTree = "<group>"; };
-		99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-LightItalic.ttf"; sourceTree = "<group>"; };
-		5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Medium.ttf"; sourceTree = "<group>"; };
-		725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-MediumItalic.ttf"; sourceTree = "<group>"; };
-		A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Regular.ttf"; sourceTree = "<group>"; };
-		9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-SemiBold.ttf"; sourceTree = "<group>"; };
-		AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-SemiBoldItalic.ttf"; sourceTree = "<group>"; };
-		7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-Thin.ttf"; sourceTree = "<group>"; };
-		3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Sora-ThinItalic.ttf"; sourceTree = "<group>"; };
+		FBC7A1C22C1F5D5C00E0D9A1 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		FBC7A1C42C1F620900E0D9A1 /* ColorExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorExtensionTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -204,6 +204,30 @@
 				2AFCD79830BD7353C2ACB39D /* Pods_Example_PointUITests.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		40C2B37355EE409986F16EDB /* Sora Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				6942623D37024A798DBC5128 /* Sora-Bold.ttf */,
+				8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */,
+				D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */,
+				45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */,
+				C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */,
+				712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */,
+				B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */,
+				E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */,
+				99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */,
+				5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */,
+				725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */,
+				A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */,
+				9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */,
+				AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */,
+				7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */,
+				3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */,
+			);
+			name = "Sora Fonts";
+			path = Fonts/Sora;
 			sourceTree = "<group>";
 		};
 		6D025A791E0FC72000C0AD91 /* View */ = {
@@ -298,30 +322,6 @@
 				874220AD8DF240B1A0652BA0 /* ThemeSettingsViewController.swift */,
 			);
 			name = ViewController;
-			sourceTree = "<group>";
-		};
-		40C2B37355EE409986F16EDB /* Sora Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				6942623D37024A798DBC5128 /* Sora-Bold.ttf */,
-				8779F84FE2D74FCE974E5F41 /* Sora-BoldItalic.ttf */,
-				D7FAC1DABC194C91BE79F1E3 /* Sora-ExtraBold.ttf */,
-				45DC49B4602F4F8A9460F4CF /* Sora-ExtraBoldItalic.ttf */,
-				C9B4F4E130ED4168AA922524 /* Sora-ExtraLight.ttf */,
-				712F80877E3A40A4B92E9D35 /* Sora-ExtraLightItalic.ttf */,
-				B127CA3974D945CC83ED58E4 /* Sora-Italic.ttf */,
-				E0EBBC12892F46D9B6C3D23F /* Sora-Light.ttf */,
-				99B6DF94B6F5495B816713D4 /* Sora-LightItalic.ttf */,
-				5E4BF8DB2FC74816ADA816B2 /* Sora-Medium.ttf */,
-				725C3D45621740AEAF4D4A61 /* Sora-MediumItalic.ttf */,
-				A36CFB924C874F3D83AE7736 /* Sora-Regular.ttf */,
-				9CC0D55A909A4AF1ADF3F817 /* Sora-SemiBold.ttf */,
-				AC007647F1FB4028AF737DCE /* Sora-SemiBoldItalic.ttf */,
-				7DA4CDB27B474D2CA5EA55CA /* Sora-Thin.ttf */,
-				3D61197AF4224F11857742B9 /* Sora-ThinItalic.ttf */,
-			);
-			name = "Sora Fonts";
-			path = Fonts/Sora;
 			sourceTree = "<group>";
 		};
 		6DB47D421DFDD58D00C908E9 /* Util */ = {
@@ -465,6 +465,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 				Base,
 			);
@@ -608,7 +609,6 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Example-Point/Pods-Example-Point-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Alamofire/Alamofire.framework",
 				"${BUILT_PRODUCTS_DIR}/IrohaSwift/IrohaSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/PMAlertController/PMAlertController.framework",
@@ -618,7 +618,6 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Alamofire.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/IrohaSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PMAlertController.framework",
@@ -825,7 +824,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/../Frameworks/";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-Point";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Debug;
 		};
@@ -840,7 +839,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/../Frameworks/";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-Point";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 			};
 			name = Release;
 		};
@@ -854,7 +853,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example-Point.app/Example-Point";
 			};
 			name = Debug;
@@ -869,7 +868,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Example-Point.app/Example-Point";
 			};
 			name = Release;
@@ -883,7 +882,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 				TEST_TARGET_NAME = "Example-Point";
 			};
 			name = Debug;
@@ -897,7 +896,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.9;
+				SWIFT_VERSION = 6.0;
 				TEST_TARGET_NAME = "Example-Point";
 			};
 			name = Release;
