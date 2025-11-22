@@ -17,7 +17,7 @@ target 'Example-Point' do
   end
 
   target 'Example-PointUITests' do
-    inherit! :search_paths
+    inherit! :complete
   end
 end
 
