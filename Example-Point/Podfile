@@ -9,7 +9,7 @@ target 'Example-Point' do
   pod 'TextFieldEffects', '~> 1.6'
   pod 'PMAlertController', '~> 4.0'
   pod 'Toast-Swift', '~> 5.1'
-  pod 'IrohaSwift', :path => '../../i23/IrohaSwift'
+  pod 'IrohaSwift', :path => '../../iroha/IrohaSwift'
   pod 'NoritoBridge', :path => '../Vendor/NoritoBridge'
 
   target 'Example-PointTests' do
@@ -22,10 +22,38 @@ target 'Example-Point' do
 end
 
 post_install do |installer|
+  app_intents_linker_flag = '-framework "AppIntents"'
+  merge_other_ldflags = lambda do |existing|
+    if existing.nil?
+      "$(inherited) #{app_intents_linker_flag}"
+    else
+      value = existing.is_a?(Array) ? existing.join(' ') : existing.to_s
+      value.include?(app_intents_linker_flag) ? value : "#{value} #{app_intents_linker_flag}"
+    end
+  end
+
   installer.pods_project.targets.each do |target|
     target.build_configurations.each do |config|
       config.build_settings['SWIFT_VERSION'] = '6.0'
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '26.0'
+      config.build_settings['OTHER_LDFLAGS'] = merge_other_ldflags.call(config.build_settings['OTHER_LDFLAGS'])
     end
+  end
+
+  # Avoid simulator linker warnings when TOOLCHAIN_DIR resolves to a Metal cryptex path.
+  Dir.glob(File.join(installer.sandbox.root, 'Target Support Files', '**', '*.xcconfig')).each do |path|
+    contents = File.read(path)
+    updated = contents.gsub('"${TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}" ', '')
+    next if contents == updated
+    File.write(path, updated)
+  end
+
+  installer.aggregate_targets.each do |aggregate_target|
+    aggregate_target.user_project.native_targets.each do |native_target|
+      native_target.build_configurations.each do |config|
+        config.build_settings['OTHER_LDFLAGS'] = merge_other_ldflags.call(config.build_settings['OTHER_LDFLAGS'])
+      end
+    end
+    aggregate_target.user_project.save
   end
 end

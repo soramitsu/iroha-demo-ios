@@ -22,7 +22,15 @@ import KeychainAccess
 @MainActor
 class KeychainManager{
     static let instance: KeychainManager = KeychainManager()
-    private init() {}
-    let keychain = Keychain(service: "jp.co.soramitsu.irohapoint")
+
+    let secureStore: RemovableKeyValueStore
+
+    private init() {
+        if ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil {
+            secureStore = InMemorySecureStore.shared
+        } else {
+            secureStore = Keychain(service: "jp.co.soramitsu.irohapoint")
+        }
+    }
     
 }

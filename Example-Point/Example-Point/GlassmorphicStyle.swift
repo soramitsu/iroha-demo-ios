@@ -150,6 +150,45 @@ extension UIButton {
         set { objc_setAssociatedObject(self, &gradientAssociationKey, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 
+    private func resolvedButtonConfiguration() -> UIButton.Configuration {
+        var buttonConfiguration = configuration ?? .plain()
+        if buttonConfiguration.title == nil, let currentTitle = title(for: .normal) {
+            buttonConfiguration.title = currentTitle
+        }
+        if buttonConfiguration.image == nil, let currentImage = image(for: .normal) {
+            buttonConfiguration.image = currentImage
+        }
+        if buttonConfiguration.baseForegroundColor == nil {
+            buttonConfiguration.baseForegroundColor = tintColor
+        }
+        return buttonConfiguration
+    }
+
+    func setButtonContentInsets(_ insets: UIEdgeInsets) {
+        if #available(iOS 15.0, *) {
+            var buttonConfiguration = resolvedButtonConfiguration()
+            buttonConfiguration.contentInsets = NSDirectionalEdgeInsets(
+                top: insets.top,
+                leading: insets.left,
+                bottom: insets.bottom,
+                trailing: insets.right
+            )
+            configuration = buttonConfiguration
+        } else {
+            contentEdgeInsets = insets
+        }
+    }
+
+    func setButtonImagePadding(_ spacing: CGFloat) {
+        if #available(iOS 15.0, *) {
+            var buttonConfiguration = resolvedButtonConfiguration()
+            buttonConfiguration.imagePadding = spacing
+            configuration = buttonConfiguration
+        } else {
+            imageEdgeInsets = UIEdgeInsets(top: 0, left: -spacing, bottom: 0, right: spacing)
+        }
+    }
+
     func applyGlassButtonStyle(accent: UIColor = .iroha) {
         layer.cornerRadius = 20
         layer.masksToBounds = false

@@ -4,20 +4,23 @@ import XCTest
 
 final class IrohaConnectCoordinatorTests: XCTestCase {
     func testPayloadParsing() throws {
-        let urlString = "example-point://irohaconnect?accountId=user%40domain&publicKey=abcdef&privateKey=123456&displayName=Sora"
+        let accountId = testAccountId(seed: 77)
+        let urlString = "example-point://irohaconnect?accountId=\(accountId)&accountAlias=treasury%40banking.retail&publicKey=abcdef&privateKey=123456&displayName=Sora"
         guard let url = URL(string: urlString) else {
             XCTFail("Unable to create URL")
             return
         }
         let payload = try IrohaConnectPayload(url: url)
-        XCTAssertEqual(payload.accountId, "user@domain")
+        XCTAssertEqual(payload.accountId, accountId)
+        XCTAssertEqual(payload.accountAlias, "treasury@banking.retail")
         XCTAssertEqual(payload.publicKeyHex, "abcdef")
         XCTAssertEqual(payload.privateKeyHex, "123456")
         XCTAssertEqual(payload.displayName, "Sora")
     }
 
     func testPayloadMissingFieldThrows() {
-        let urlString = "example-point://irohaconnect?accountId=user%40domain&publicKey=abc"
+        let accountId = testAccountId(seed: 78)
+        let urlString = "example-point://irohaconnect?accountId=\(accountId)&publicKey=abc"
         guard let url = URL(string: urlString) else {
             XCTFail("Unable to create URL")
             return

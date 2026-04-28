@@ -14,10 +14,14 @@ final class RegisterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         installGlassBackground()
+        view.backgroundColor = .clear
+        backImg.superview?.backgroundColor = .clear
+        backImg.backgroundColor = .clear
         registerButton.layer.borderColor = UIColor.clear.cgColor
         registerButton.applyGlassButtonStyle()
         nameField.applyGlassInputStyle()
         nameField.enforceHeight(56)
+        nameField.placeholder = "エイリアス (name@dataspace)"
         registerButton.enforceHeight(56)
         backImg.alpha = 0.2
         registerButton.addTarget(self, action: #selector(registerAccount), for: .touchUpInside)
@@ -31,8 +35,8 @@ final class RegisterViewController: UIViewController {
     }
 
     @objc private func registerAccount() {
-        guard let alias = nameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !alias.isEmpty else {
-            presentAlert(title: "エラー", message: "ユーザー名を入力してください")
+        guard let alias = AccountIdentity.normalizedAlias(nameField.text) else {
+            presentAlert(title: "エラー", message: "エイリアスは name@dataspace または name@domain.dataspace 形式で入力してください")
             return
         }
 
@@ -44,11 +48,11 @@ final class RegisterViewController: UIViewController {
             do {
                 let mnemonic = try MnemonicGenerator.shared.generate(wordCount: .twelve)
                 let material = try SoraNexusKeyMaterial(mnemonic: mnemonic)
-                let response = try await service.registerAccount(displayName: alias, material: material)
+                let account = try await service.registerAccount(alias: alias, material: material)
                 KeychainManager.instance.backupDestinations = []
                 await MainActor.run {
                     progress.dismiss(animated: true) {
-                        self.showSuccess(accountId: response.accountId)
+                        self.showSuccess(account: account)
                     }
                 }
             } catch {
@@ -61,18 +65,23 @@ final class RegisterViewController: UIViewController {
         }
     }
 
-    private func showSuccess(accountId: String) {
-        let description = """
-        アカウントID:
-        \(accountId)
-
-        Toriiに登録しました。ウォレットを開始できます。
-        """
+    private func showSuccess(account: StoredAccount) {
+        let descriptionLines = [
+            "アカウントエイリアス:",
+            account.receiveAddressLiteral,
+            "",
+            "アカウントID:",
+            account.accountId,
+            "",
+            "Toriiに登録しました。ウォレットを開始できます。"
+        ]
+        let description = descriptionLines.joined(separator: "\n")
         let alert = PMAlertController(title: "完了", description: description, image: nil, style: .alert)
         alert.addAction(PMAlertAction(title: "アプリを開始", style: .default) { [weak self] in
             guard let self else { return }
             let storyboard = self.storyboard ?? UIStoryboard(name: "Main", bundle: nil)
             if let contents = storyboard.instantiateViewController(withIdentifier: "Contents") as UIViewController? {
+                SubscriptionHubConfigurator.configureIfNeeded(contents)
                 self.present(contents, animated: true)
             }
         })

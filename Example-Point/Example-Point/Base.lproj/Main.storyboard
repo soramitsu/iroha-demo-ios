@@ -36,9 +36,6 @@
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Jlm-hu-IxQ">
                                                 <rect key="frame" x="30" y="327.5" width="315" height="52"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="Jlm-hu-IxQ" secondAttribute="height" multiplier="271:45" id="Npo-gb-WxX"/>
-                                                </constraints>
                                                 <fontDescription key="fontDescription" type="system" pointSize="19"/>
                                                 <state key="normal" title="Register">
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -54,9 +51,6 @@
                                             </button>
                                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="9RD-8F-hCY" customClass="HoshiTextField" customModule="TextFieldEffects">
                                                 <rect key="frame" x="40" y="235.5" width="295" height="62"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="width" secondItem="9RD-8F-hCY" secondAttribute="height" multiplier="62:13" id="dVf-8X-aV1"/>
-                                                </constraints>
                                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="28"/>
                                                 <textInputTraits key="textInputTraits"/>
@@ -130,7 +124,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="eto-8A-W6g">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="TransactionCell" id="eto-8A-W6g">
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="eto-8A-W6g" id="pCZ-ae-nks">
@@ -165,9 +159,6 @@
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="to" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="DUn-0x-B03" customClass="HoshiTextField" customModule="TextFieldEffects">
                                 <rect key="frame" x="30" y="124" width="257" height="54"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="DUn-0x-B03" secondAttribute="height" multiplier="257:54" id="Vfh-dA-lFh"/>
-                                </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -188,9 +179,6 @@
                             </textField>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="amount" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fdr-LS-TFB" customClass="HoshiTextField" customModule="TextFieldEffects">
                                 <rect key="frame" x="30" y="186" width="315" height="54"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="fdr-LS-TFB" secondAttribute="height" multiplier="35:6" id="TZ1-4k-wID"/>
-                                </constraints>
                                 <nil key="textColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -212,7 +200,6 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uWj-S9-1Hk">
                                 <rect key="frame" x="295" y="128" width="50" height="50"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" secondItem="uWj-S9-1Hk" secondAttribute="height" multiplier="1:1" id="Qkr-dF-Cv3"/>
                                     <constraint firstAttribute="width" constant="50" id="qmb-2S-PaE"/>
                                 </constraints>
                                 <state key="normal" title="Button" image="icon_qr"/>
@@ -222,9 +209,6 @@
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="NF7-b1-4Xu">
                                 <rect key="frame" x="30" y="312" width="315" height="43"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="NF7-b1-4Xu" secondAttribute="height" multiplier="315:43" id="Oj4-GG-OJL"/>
-                                </constraints>
                                 <state key="normal" title="Button" image="button_send"/>
                             </button>
                         </subviews>
@@ -321,9 +305,6 @@
                                 <subviews>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="amount" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="fn8-xC-v4W" customClass="HoshiTextField" customModule="TextFieldEffects">
                                         <rect key="frame" x="30" y="-30" width="315" height="54"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="fn8-xC-v4W" secondAttribute="height" multiplier="35:6" id="TjQ-ZO-7Qv"/>
-                                        </constraints>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                         <textInputTraits key="textInputTraits" keyboardType="numberPad"/>
@@ -344,9 +325,6 @@
                                     </textField>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="5A594F1D-96A5-4934-A6DB-80EB25616C1B" translatesAutoresizingMaskIntoConstraints="NO" id="HhX-lD-UDx">
                                         <rect key="frame" x="67" y="54" width="240" height="240"/>
-                                        <constraints>
-                                            <constraint firstAttribute="width" secondItem="HhX-lD-UDx" secondAttribute="height" multiplier="1:1" id="jdc-Ty-fHY"/>
-                                        </constraints>
                                     </imageView>
                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="ohfaidfaooahwefavadfvawefgnaeofgnaknvdnandvnadv" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="dpl-XX-eiI">
                                         <rect key="frame" x="30" y="328" width="315" height="30"/>
@@ -363,7 +341,6 @@
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="WvW-jx-cQ9" firstAttribute="centerY" secondItem="dpl-XX-eiI" secondAttribute="centerY" id="0T5-fH-3bu"/>
-                                    <constraint firstAttribute="width" secondItem="JWA-PO-tot" secondAttribute="height" multiplier="25:31" id="5Gh-WW-iOM"/>
                                     <constraint firstAttribute="bottom" secondItem="HhX-lD-UDx" secondAttribute="bottom" constant="197" id="9cn-3W-hQy"/>
                                     <constraint firstItem="WvW-jx-cQ9" firstAttribute="width" secondItem="dpl-XX-eiI" secondAttribute="width" id="J1y-Lh-foV"/>
                                     <constraint firstItem="fn8-xC-v4W" firstAttribute="top" secondItem="JWA-PO-tot" secondAttribute="top" constant="-30" id="LzV-3B-jRu"/>

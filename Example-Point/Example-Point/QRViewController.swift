@@ -95,13 +95,9 @@ final class QRViewController: UIViewController {
 
     private func handlePayload(_ value: String) {
         guard let payload = convertStringToDictionary(text: value),
-              let account = payload["account"] as? String else {
+              let account = payload["account"] as? String,
+              let normalizedAccount = AccountIdentity.normalizedReference(account) else {
             presentError(message: "不正なQRコードです")
-            return
-        }
-
-        if account.caseInsensitiveCompare(KeychainManager.instance.accountId ?? "") == .orderedSame {
-            presentError(message: "自分に送信することはできません")
             return
         }
 
@@ -113,7 +109,7 @@ final class QRViewController: UIViewController {
         }
 
         if let sendVC = navigationController?.viewControllers.dropLast().last as? SendViewController {
-            sendVC.prefill(receiver: account, amount: amountValue)
+            sendVC.prefill(receiver: normalizedAccount, amount: amountValue)
         }
         navigationController?.popViewController(animated: true)
     }

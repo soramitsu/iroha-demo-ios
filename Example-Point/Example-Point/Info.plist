@@ -30,6 +30,14 @@
 				<string>example-point</string>
 			</array>
 		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>jp.co.soramitsu.Example-Point.wallet</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>iroha</string>
+			</array>
+		</dict>
 	</array>
 	<key>CFBundleVersion</key>
 	<string>10</string>
@@ -42,6 +50,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>QRコードを読み取ります</string>
+	<key>NFCReaderUsageDescription</key>
+	<string>オフラインバウチャーをNFCで共有するために使用します</string>
 	<key>ToriiAssetDefinitionId</key>
 	<string>iroha#wonderland</string>
 	<key>ToriiBaseURL</key>

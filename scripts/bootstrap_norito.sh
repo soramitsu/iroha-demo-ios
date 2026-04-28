@@ -2,13 +2,13 @@
 set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-SOURCE="${REPO_ROOT}/../i23/dist/NoritoBridge.xcframework"
+SOURCE="${REPO_ROOT}/../iroha/dist/NoritoBridge.xcframework"
 DEST_DIR="${REPO_ROOT}/Vendor"
 DEST="${DEST_DIR}/NoritoBridge/NoritoBridge.xcframework"
 
 if [[ ! -d "${SOURCE}" ]]; then
   echo "[bootstrap] Missing source xcframework at ${SOURCE}" >&2
-  echo "[bootstrap] Make sure the i23 repo is checked out at ../i23 and built." >&2
+  echo "[bootstrap] Make sure the iroha repo is checked out at ../iroha and built." >&2
   exit 1
 fi
 

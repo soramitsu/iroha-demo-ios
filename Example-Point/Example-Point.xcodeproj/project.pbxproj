@@ -855,6 +855,11 @@
 				DEVELOPMENT_TEAM = YLWWUD25VZ;
 				INFOPLIST_FILE = "Example-Point/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/../Frameworks/";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-Point";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
@@ -870,6 +875,11 @@
 				DEVELOPMENT_TEAM = YLWWUD25VZ;
 				INFOPLIST_FILE = "Example-Point/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/../Frameworks/";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-Point";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
@@ -884,6 +894,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Example-PointTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
@@ -899,6 +914,11 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = "Example-PointTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointTests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
@@ -913,6 +933,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				INFOPLIST_FILE = "Example-PointUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;
@@ -927,6 +952,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				INFOPLIST_FILE = "Example-PointUITests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					"\"AppIntents\"",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = "co.jp.soramitsu.Example-PointUITests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 6.0;

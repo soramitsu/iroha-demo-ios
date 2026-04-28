@@ -3,7 +3,6 @@ import UIKit
 @MainActor
 final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
-    private var themeObserver: NSObjectProtocol?
 
     func scene(_ scene: UIScene,
                willConnectTo session: UISceneSession,
@@ -14,18 +13,19 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.tintColor = .iroha
         self.window = window
         ThemeManager.shared.apply(to: window)
-        themeObserver = NotificationCenter.default.addObserver(forName: .themeDidChange,
-                                                               object: nil,
-                                                               queue: .main) { [weak self] _ in
-            ThemeManager.shared.apply(to: self?.window)
-        }
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleThemeDidChange),
+                                               name: .themeDidChange,
+                                               object: nil)
         window.makeKeyAndVisible()
     }
 
     private func makeRootViewController() -> UIViewController {
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
-        if KeychainManager.instance.privateKeyHex != nil,
+        _ = KeychainManager.instance.migrateLegacyAccountIfNeeded()
+        if KeychainManager.instance.activeAccount != nil,
            let contents = storyboard.instantiateViewController(withIdentifier: "Contents") as UIViewController? {
+            SubscriptionHubConfigurator.configureIfNeeded(contents)
             return contents
         }
         return SoraNexusOnboardingViewController()
@@ -33,13 +33,19 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts contexts: Set<UIOpenURLContext>) {
         guard let url = contexts.first?.url else { return }
+        if IrohaWalletConnectSessionCoordinator.shared.handleIncoming(url: url, presenter: window?.rootViewController) {
+            return
+        }
         _ = IrohaConnectCoordinator.shared.handleCallback(url: url)
+    }
+
+    @objc
+    private func handleThemeDidChange() {
+        ThemeManager.shared.apply(to: window)
     }
 
     @MainActor
     deinit {
-        if let observer = themeObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
+        NotificationCenter.default.removeObserver(self, name: .themeDidChange, object: nil)
     }
 }

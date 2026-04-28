@@ -1,24 +1,24 @@
 # iroha-demo-point
 
 Modernized Hyperledger Iroha (v2+) demo wallet that now talks directly to Torii using
-the latest Swift SDK from the [`i23`](../i23) monorepo.
+the latest Swift SDK from the sibling [`iroha`](../iroha) monorepo.
 
 ## Requirements
 
-- Xcode 17 / iOS 19 SDK
+- Xcode 17 / iOS 26 SDK
 - `pod` (CocoaPods 1.16+)
-- Local checkout of `../i23` (the bleeding-edge Iroha repo)
+- Local checkout of `../iroha` (the bleeding-edge Iroha repo)
 
 ## Bootstrap
 
-1. Ensure the sibling repo `../i23` exists (for example: `/Users/you/dev/i23`).
+1. Ensure the sibling repo `../iroha` exists (for example: `/Users/you/dev/iroha`).
 2. Copy the native `NoritoBridge` XCFramework into this repo (needed for signing):
 
    ```bash
    ./scripts/bootstrap_norito.sh
    ```
 
-   The script copies `../i23/dist/NoritoBridge.xcframework` into `Vendor/NoritoBridge`.
+   The script copies `../iroha/dist/NoritoBridge.xcframework` into `Vendor/NoritoBridge`.
 3. Install CocoaPods dependencies (includes the local `IrohaSwift` pod):
 
    ```bash
@@ -37,7 +37,7 @@ the latest Swift SDK from the [`i23`](../i23) monorepo.
 | `ToriiBaseURL`         | Base REST endpoint (e.g. `https://127.0.0.1:8080`)       |
 | `ToriiChainId`         | Chain identifier used when building transactions        |
 | `ToriiAssetDefinitionId` | Asset to display and transfer (`asset#domain`)        |
-| `ToriiDefaultDomain`   | Default domain for deriving account IDs                 |
+| `ToriiDefaultDomain`   | Legacy compatibility key; canonical account IDs are i105 |
 | `Unit`                 | Display unit string shown in the wallet UI              |
 
 Update these values to point at your Torii node before running the app.
@@ -51,6 +51,12 @@ Update these values to point at your Torii node before running the app.
    Storage, or link an existing SORA Nexus account via IrohaConnect before the app
    calls Torii’s `/v1/accounts/onboard` endpoint.
 4. Use the **Wallet**, **Send**, and **Receive** tabs to interact with Torii.
+
+Account identity rules are strict:
+
+- Canonical account IDs are always i105 literals.
+- Human-facing aliases must use `name@dataspace` or `name@domain.dataspace`.
+- Aliases are resolved on-chain to canonical i105 account IDs before transfers/signing.
 
 ### Key backup & IrohaConnect
 
@@ -89,7 +95,7 @@ Update these values to point at your Torii node before running the app.
 ## Notes
 
 - `NoritoBridge.xcframework` is large and therefore ignored in git. Run the bootstrap
-  script whenever you update the bridge inside the `i23` repo.
+  script whenever you update the bridge inside the `iroha` repo.
 - The demo fetches balances and transaction summaries directly from Torii and submits
   transfers via the pipeline endpoints using `IrohaSwift`.
 

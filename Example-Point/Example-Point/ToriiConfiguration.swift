@@ -40,7 +40,7 @@ struct ToriiConfiguration {
 
 extension ToriiConfiguration {
     func accountId(for publicKey: Data) -> String {
-        AccountId.make(publicKey: publicKey, domain: defaultDomain)
+        AccountId.make(publicKey: publicKey)
     }
 
     var assetDisplayName: String {

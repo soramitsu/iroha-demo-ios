@@ -10,6 +10,7 @@ final class SoraNexusOnboardingViewController: UIViewController {
     private let backupStorage = KeyBackupStorage.shared
     private var generatedMaterial: SoraNexusKeyMaterial?
     private var selectedBackups = Set<KeyBackupDestination>()
+    var onAccountRegistered: ((StoredAccount) -> Void)?
 
     private let scrollView = UIScrollView()
     private let contentStack = UIStackView()
@@ -19,7 +20,8 @@ final class SoraNexusOnboardingViewController: UIViewController {
     private let wordCountControl = UISegmentedControl(items: ["12語", "24語"])
     private let generateButton = UIButton(type: .system)
     private let mnemonicCard = UIView()
-    private let mnemonicLabel = UILabel()
+    private let mnemonicGridStack = UIStackView()
+    private let mnemonicPlaceholderLabel = UILabel()
     private let manualBackupButton = UIButton(type: .system)
     private let iCloudBackupButton = UIButton(type: .system)
     private let googleBackupButton = UIButton(type: .system)
@@ -76,13 +78,13 @@ final class SoraNexusOnboardingViewController: UIViewController {
         titleLabel.adjustsFontForContentSizeCategory = true
         titleLabel.textColor = UIColor.glassPrimaryText
 
-        subtitleLabel.text = "初回起動では鍵を生成するか、IrohaConnectで既存アカウントを連携できます。"
+        subtitleLabel.text = "初回起動では鍵を生成し、オンチェーンのアカウントエイリアスを登録するか、IrohaConnectで既存アカウントを連携できます。"
         subtitleLabel.font = UIFont.sora(.regular, size: 16)
         subtitleLabel.adjustsFontForContentSizeCategory = true
         subtitleLabel.textColor = UIColor.glassSecondaryText
         subtitleLabel.numberOfLines = 0
 
-        displayNameField.placeholder = "表示名"
+        displayNameField.placeholder = "エイリアス (name@dataspace)"
         displayNameField.translatesAutoresizingMaskIntoConstraints = false
         displayNameField.enforceHeight(56)
         displayNameField.keyboardType = .default
@@ -112,18 +114,29 @@ final class SoraNexusOnboardingViewController: UIViewController {
 
         mnemonicCard.translatesAutoresizingMaskIntoConstraints = false
         mnemonicCard.applyGlassCardStyle(cornerRadius: 24)
-        mnemonicLabel.text = "12/24語のパスフレーズがここに表示されます"
-        mnemonicLabel.textColor = UIColor.glassPrimaryText
-        mnemonicLabel.font = .monospacedSystemFont(ofSize: 16, weight: .medium)
-        mnemonicLabel.numberOfLines = 0
-        mnemonicLabel.adjustsFontForContentSizeCategory = true
-        mnemonicLabel.translatesAutoresizingMaskIntoConstraints = false
-        mnemonicCard.addSubview(mnemonicLabel)
+        mnemonicPlaceholderLabel.text = "12/24語のパスフレーズがここに表示されます"
+        mnemonicPlaceholderLabel.textColor = UIColor.glassPrimaryText
+        mnemonicPlaceholderLabel.font = .monospacedSystemFont(ofSize: 16, weight: .medium)
+        mnemonicPlaceholderLabel.numberOfLines = 0
+        mnemonicPlaceholderLabel.adjustsFontForContentSizeCategory = true
+        mnemonicPlaceholderLabel.translatesAutoresizingMaskIntoConstraints = false
+        mnemonicCard.addSubview(mnemonicPlaceholderLabel)
+
+        mnemonicGridStack.axis = .vertical
+        mnemonicGridStack.spacing = 10
+        mnemonicGridStack.translatesAutoresizingMaskIntoConstraints = false
+        mnemonicGridStack.isHidden = true
+        mnemonicCard.addSubview(mnemonicGridStack)
         NSLayoutConstraint.activate([
-            mnemonicLabel.leadingAnchor.constraint(equalTo: mnemonicCard.leadingAnchor, constant: 20),
-            mnemonicLabel.trailingAnchor.constraint(equalTo: mnemonicCard.trailingAnchor, constant: -20),
-            mnemonicLabel.topAnchor.constraint(equalTo: mnemonicCard.topAnchor, constant: 16),
-            mnemonicLabel.bottomAnchor.constraint(equalTo: mnemonicCard.bottomAnchor, constant: -16)
+            mnemonicPlaceholderLabel.leadingAnchor.constraint(equalTo: mnemonicCard.leadingAnchor, constant: 20),
+            mnemonicPlaceholderLabel.trailingAnchor.constraint(equalTo: mnemonicCard.trailingAnchor, constant: -20),
+            mnemonicPlaceholderLabel.topAnchor.constraint(equalTo: mnemonicCard.topAnchor, constant: 16),
+            mnemonicPlaceholderLabel.bottomAnchor.constraint(equalTo: mnemonicCard.bottomAnchor, constant: -16),
+
+            mnemonicGridStack.leadingAnchor.constraint(equalTo: mnemonicCard.leadingAnchor, constant: 16),
+            mnemonicGridStack.trailingAnchor.constraint(equalTo: mnemonicCard.trailingAnchor, constant: -16),
+            mnemonicGridStack.topAnchor.constraint(equalTo: mnemonicCard.topAnchor, constant: 12),
+            mnemonicGridStack.bottomAnchor.constraint(equalTo: mnemonicCard.bottomAnchor, constant: -12)
         ])
 
         manualBackupButton.setTitle("手動でバックアップ", for: .normal)
@@ -170,8 +183,8 @@ final class SoraNexusOnboardingViewController: UIViewController {
 
         contentStack.addArrangedSubview(heroStack)
 
-        let identitySection = makeSection(title: "1. 表示名を設定",
-                                          subtitle: "ウォレットとQR受け取り画面に表示されます。",
+        let identitySection = makeSection(title: "1. エイリアスを設定",
+                                          subtitle: "オンチェーンでは name@dataspace または name@domain.dataspace を使用します。",
                                           bodyViews: [displayNameField, wordCountControl, generateButton])
         contentStack.addArrangedSubview(identitySection)
 
@@ -296,18 +309,15 @@ final class SoraNexusOnboardingViewController: UIViewController {
     }
 
     @objc private func generateKeys() {
-        let name = displayNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        guard !name.isEmpty else {
-            presentAlert(title: "表示名を入力してください", message: "ウォレットに表示される名前を設定します。")
+        guard AccountIdentity.normalizedAlias(displayNameField.text) != nil else {
+            presentAlert(title: "エイリアスを入力してください", message: "name@dataspace または name@domain.dataspace 形式で設定します。")
             return
         }
         do {
             let mnemonic = try MnemonicGenerator.shared.generate(wordCount: selectedWordCount())
             generatedMaterial = try SoraNexusKeyMaterial(mnemonic: mnemonic)
-            mnemonicLabel.text = mnemonic.phrase
-            mnemonicLabel.textColor = UIColor.glassPrimaryText
+            renderMnemonicGrid(words: mnemonic.words)
             selectedBackups.removeAll()
-            KeychainManager.instance.backupDestinations = []
             updateBackupStatus()
             updateStartButtonState()
         } catch {
@@ -373,19 +383,20 @@ final class SoraNexusOnboardingViewController: UIViewController {
             presentAlert(title: "バックアップを選んでください", message: "少なくとも1種類のバックアップを保存してください。")
             return
         }
-        guard let displayName = displayNameField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !displayName.isEmpty else {
-            presentAlert(title: "表示名が空です", message: "ウォレット名を入力してください。")
+        guard let alias = AccountIdentity.normalizedAlias(displayNameField.text) else {
+            presentAlert(title: "エイリアスが不正です", message: "name@dataspace または name@domain.dataspace 形式で入力してください。")
             return
         }
         setLoading(true)
         Task { [weak self] in
             guard let self else { return }
             do {
-                let response = try await service.registerAccount(displayName: displayName, material: material)
-                KeychainManager.instance.backupDestinations = Array(self.selectedBackups)
+                let account = try await service.registerAccount(alias: alias,
+                                                                material: material,
+                                                                backups: Array(self.selectedBackups))
                 await MainActor.run {
                     self.setLoading(false)
-                    self.presentSuccess(accountId: response.accountId)
+                    self.presentSuccess(for: account)
                 }
             } catch {
                 await MainActor.run {
@@ -435,11 +446,29 @@ final class SoraNexusOnboardingViewController: UIViewController {
         present(alert, animated: true)
     }
 
-    private func presentSuccess(accountId: String) {
-        let message = "アカウントID: \(accountId)\n\nSORA Nexus鍵を登録しました。"
+    private func identityDescription(for account: StoredAccount, footer: String) -> String {
+        var lines: [String] = []
+        if let accountAlias = account.accountAlias {
+            lines.append("アカウントエイリアス: \(accountAlias)")
+        }
+        lines.append("アカウントID: \(account.accountId)")
+        lines.append("")
+        lines.append(footer)
+        return lines.joined(separator: "\n")
+    }
+
+    private func presentSuccess(for account: StoredAccount, description: String? = nil) {
+        let message = description ?? identityDescription(for: account, footer: "SORA Nexus鍵を登録しました。")
         let alert = PMAlertController(title: "準備完了", description: message, image: nil, style: .alert)
-        alert.addAction(PMAlertAction(title: "ウォレットへ", style: .default) { [weak self] in
-            self?.presentWallet()
+        let actionTitle = onAccountRegistered == nil ? "ウォレットへ" : "このアカウントを使う"
+        alert.addAction(PMAlertAction(title: actionTitle, style: .default) { [weak self] in
+            guard let self else { return }
+            if let onAccountRegistered {
+                onAccountRegistered(account)
+                self.dismiss(animated: true)
+            } else {
+                self.presentWallet()
+            }
         })
         present(alert, animated: true)
     }
@@ -449,6 +478,7 @@ final class SoraNexusOnboardingViewController: UIViewController {
         guard let contents = storyboard.instantiateViewController(withIdentifier: "Contents") as UIViewController? else {
             return
         }
+        SubscriptionHubConfigurator.configureIfNeeded(contents)
         contents.modalPresentationStyle = .fullScreen
         present(contents, animated: true)
     }
@@ -458,6 +488,11 @@ final class SoraNexusOnboardingViewController: UIViewController {
             presentAlert(title: "無効な秘密鍵", message: "IrohaConnectからの鍵を解析できませんでした")
             return
         }
+        guard let canonicalAccountId = AccountIdentity.normalizedAccountId(payload.accountId) else {
+            presentAlert(title: "無効なアカウントID", message: "IrohaConnectから届いた accountId は canonical i105 である必要があります。")
+            return
+        }
+        let accountAlias = AccountIdentity.normalizedAlias(payload.accountAlias)
         do {
             let keypair = try Keypair(privateKeyBytes: privateKeyData)
             let derivedPublicHex = keypair.publicKey.hexEncodedString().lowercased()
@@ -465,19 +500,81 @@ final class SoraNexusOnboardingViewController: UIViewController {
                 presentAlert(title: "公開鍵が一致しません", message: "IrohaConnectからの公開鍵と秘密鍵が一致しません。")
                 return
             }
-            KeychainManager.instance.accountId = payload.accountId
-            KeychainManager.instance.privateKeyHex = payload.privateKeyHex
-            KeychainManager.instance.publicKeyHex = payload.publicKeyHex
-            KeychainManager.instance.displayName = payload.displayName ?? payload.accountId
-            KeychainManager.instance.recoveryMnemonic = nil
-            KeychainManager.instance.backupDestinations = []
-            let alert = PMAlertController(title: "IrohaConnectと連携", description: "既存のSORA Nexusアカウントを読み込みました。", image: nil, style: .alert)
-            alert.addAction(PMAlertAction(title: "ウォレットへ", style: .default) { [weak self] in
-                self?.presentWallet()
-            })
-            present(alert, animated: true)
+            let account = StoredAccount(accountId: canonicalAccountId,
+                                        accountAlias: accountAlias,
+                                        displayName: payload.displayName,
+                                        publicKeyHex: payload.publicKeyHex,
+                                        privateKeyHex: payload.privateKeyHex,
+                                        recoveryMnemonic: nil,
+                                        backupDestinations: [])
+            KeychainManager.instance.save(account: account, makeActive: true)
+            let description = identityDescription(for: account, footer: "既存のSORA Nexusアカウントを読み込みました。")
+            presentSuccess(for: account, description: description)
         } catch {
             presentAlert(title: "鍵の読み込みに失敗", message: error.localizedDescription)
+        }
+    }
+
+    private func renderMnemonicGrid(words: [String]) {
+        mnemonicGridStack.arrangedSubviews.forEach { view in
+            mnemonicGridStack.removeArrangedSubview(view)
+            view.removeFromSuperview()
+        }
+        guard !words.isEmpty else {
+            mnemonicGridStack.isHidden = true
+            mnemonicPlaceholderLabel.isHidden = false
+            return
+        }
+        mnemonicGridStack.isHidden = false
+        mnemonicPlaceholderLabel.isHidden = true
+
+        let rows = MnemonicGridFormatter.grid(words: words, columns: 3)
+        rows.forEach { rowItems in
+            let rowStack = UIStackView()
+            rowStack.axis = .horizontal
+            rowStack.spacing = 8
+            rowStack.distribution = .fillEqually
+
+            rowItems.forEach { item in
+                let cell = UIView()
+                cell.backgroundColor = UIColor.glassFieldBackground.withAlphaComponent(0.9)
+                cell.layer.cornerRadius = 12
+                cell.layer.masksToBounds = true
+
+                let indexLabel = UILabel()
+                indexLabel.font = .monospacedSystemFont(ofSize: 13, weight: .bold)
+                indexLabel.textColor = UIColor.glassSecondaryText
+                indexLabel.text = "\(item.index)."
+                indexLabel.setContentCompressionResistancePriority(.required, for: .horizontal)
+                indexLabel.setContentHuggingPriority(.required, for: .horizontal)
+
+                let wordLabel = UILabel()
+                wordLabel.font = UIFont.sora(.bold, size: 16)
+                wordLabel.textColor = UIColor.glassPrimaryText
+                wordLabel.text = item.word
+                wordLabel.numberOfLines = 0
+                wordLabel.lineBreakMode = .byCharWrapping
+                wordLabel.adjustsFontForContentSizeCategory = true
+                wordLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+                wordLabel.setContentHuggingPriority(.defaultLow, for: .horizontal)
+
+                let cellStack = UIStackView(arrangedSubviews: [indexLabel, wordLabel])
+                cellStack.axis = .horizontal
+                cellStack.alignment = .firstBaseline
+                cellStack.spacing = 6
+                cellStack.translatesAutoresizingMaskIntoConstraints = false
+
+                cell.addSubview(cellStack)
+                NSLayoutConstraint.activate([
+                    cellStack.leadingAnchor.constraint(equalTo: cell.leadingAnchor, constant: 10),
+                    cellStack.trailingAnchor.constraint(equalTo: cell.trailingAnchor, constant: -10),
+                    cellStack.topAnchor.constraint(equalTo: cell.topAnchor, constant: 10),
+                    cellStack.bottomAnchor.constraint(equalTo: cell.bottomAnchor, constant: -10)
+                ])
+                rowStack.addArrangedSubview(cell)
+            }
+
+            mnemonicGridStack.addArrangedSubview(rowStack)
         }
     }
 }
@@ -489,5 +586,31 @@ extension SoraNexusOnboardingViewController: @MainActor IrohaConnectCoordinatorD
 
     func irohaConnectCoordinator(_ coordinator: IrohaConnectCoordinator, didFail error: IrohaConnectError) {
         presentAlert(title: "IrohaConnect", message: error.localizedDescription)
+    }
+}
+
+struct MnemonicGridItem {
+    let index: Int
+    let word: String
+}
+
+enum MnemonicGridFormatter {
+    static func grid(words: [String], columns: Int = 3) -> [[MnemonicGridItem]] {
+        let columnCount = max(columns, 1)
+        var rows: [[MnemonicGridItem]] = []
+        var currentRow: [MnemonicGridItem] = []
+
+        for (offset, word) in words.enumerated() {
+            let item = MnemonicGridItem(index: offset + 1, word: word)
+            currentRow.append(item)
+            if currentRow.count == columnCount {
+                rows.append(currentRow)
+                currentRow.removeAll()
+            }
+        }
+        if !currentRow.isEmpty {
+            rows.append(currentRow)
+        }
+        return rows
     }
 }

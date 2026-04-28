@@ -11,10 +11,12 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
     private let colorHex = Bundle.main.infoDictionary?["AppColor"] as? String ?? "E4232D"
     private let service = ToriiService.shared
     private var balanceSummaryLabel: UILabel?
+    private var availabilityLabel: UILabel?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         installGlassBackground()
+        view.backgroundColor = .clear
         amountField.delegate = self
         configureKeyboardAccessory()
         applyGlassStyling()
@@ -23,8 +25,12 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         toField.enforceHeight(56)
         amountField.enforceHeight(56)
         sendButton.enforceHeight(56)
-        toField.placeholder = "送信先アカウントID"
+        toField.placeholder = "送信先アカウントID / エイリアス"
         amountField.placeholder = "数量 (\(service.config.unit))"
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(handleAccountChange),
+                                               name: .toriiActiveAccountDidChange,
+                                               object: nil)
 
         let summaryCard = UIView()
         summaryCard.translatesAutoresizingMaskIntoConstraints = false
@@ -60,6 +66,17 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         summaryStack.addArrangedSubview(balanceLabel)
         summaryStack.addArrangedSubview(networkLabel)
 
+        let availabilityLabel = UILabel()
+        availabilityLabel.font = UIFont.sora(.medium, size: 13)
+        availabilityLabel.textColor = .systemRed
+        availabilityLabel.numberOfLines = 0
+        availabilityLabel.textAlignment = .left
+        availabilityLabel.text = "ネイティブ署名ライブラリが見つかりません。送金機能は現在利用できません。"
+        availabilityLabel.isHidden = service.canSubmitTransactions
+        availabilityLabel.translatesAutoresizingMaskIntoConstraints = false
+        summaryStack.addArrangedSubview(availabilityLabel)
+        self.availabilityLabel = availabilityLabel
+
         NSLayoutConstraint.activate([
             summaryCard.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             summaryCard.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
@@ -76,8 +93,10 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
             let destinationFilled = !(self.toField.text?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)
             let amount = Decimal(string: self.amountField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "") ?? .zero
             let validAmount = amount > 0
-            self.sendButton.isEnabled = destinationFilled && validAmount
+            let available = self.service.canSubmitTransactions
+            self.sendButton.isEnabled = destinationFilled && validAmount && available
             self.sendButton.alpha = self.sendButton.isEnabled ? 1.0 : 0.65
+            self.availabilityLabel?.isHidden = available
         }
         toField.addAction(UIAction { _ in updateSendButtonState() }, for: .editingChanged)
         amountField.addAction(UIAction { _ in updateSendButtonState() }, for: .editingChanged)
@@ -87,6 +106,10 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.topViewController?.navigationItem.title = "Send"
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person.crop.circle"),
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(showAccountSwitcher))
         tabBarController?.tabBar.isHidden = false
         balanceSummaryLabel?.text = "\(DataManager.instance.balance.plainString) \(service.config.unit)"
     }
@@ -121,11 +144,7 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
 
     @objc private func send() {
         guard let destination = toField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !destination.isEmpty else {
-            presentError(message: "送信先を入力してください")
-            return
-        }
-        guard destination.caseInsensitiveCompare(KeychainManager.instance.accountId ?? "") != .orderedSame else {
-            presentError(message: "自分に送ることはできません")
+            presentError(message: "送信先のアカウントIDまたはエイリアスを入力してください")
             return
         }
         guard let amountText = amountField.text?.trimmingCharacters(in: .whitespacesAndNewlines),
@@ -139,7 +158,18 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
 
         Task {
             do {
-                let status = try await service.submitTransfer(amount: amount, receiverAccountId: destination)
+                let resolvedReceiver = try await service.resolveAccountReference(destination)
+                if let currentAccountId = KeychainManager.instance.accountId,
+                   resolvedReceiver.accountId == currentAccountId {
+                    await MainActor.run {
+                        progress.dismiss(animated: true) {
+                            self.presentError(message: "自分に送ることはできません")
+                        }
+                    }
+                    return
+                }
+                let status = try await service.submitTransfer(amount: amount,
+                                                              receiverAccountId: resolvedReceiver.accountId)
                 NotificationCenter.default.post(name: .toriiWalletShouldRefresh, object: nil)
                 await MainActor.run {
                     progress.dismiss(animated: true) {
@@ -174,6 +204,38 @@ final class SendViewController: UIViewController, UITextFieldDelegate {
         let alert = PMAlertController(title: "エラー", description: message, image: nil, style: .alert)
         alert.addAction(PMAlertAction(title: "OK", style: .cancel, action: nil))
         present(alert, animated: true)
+    }
+
+    @objc private func handleAccountChange() {
+        balanceSummaryLabel?.text = "\(DataManager.instance.balance.plainString) \(service.config.unit)"
+        toField.text = ""
+        amountField.text = ""
+        sendButton.isEnabled = false
+        sendButton.alpha = 0.65
+    }
+
+    @objc private func showAccountSwitcher() {
+        let controller = AccountSwitcherViewController()
+        controller.onAddAccount = { [weak self] in
+            self?.presentAdditionalRegistration()
+        }
+        controller.modalPresentationStyle = .pageSheet
+        if let sheet = controller.sheetPresentationController {
+            sheet.detents = [.medium(), .large()]
+            sheet.prefersGrabberVisible = true
+        }
+        present(controller, animated: true)
+    }
+
+    private func presentAdditionalRegistration() {
+        let onboarding = SoraNexusOnboardingViewController()
+        onboarding.onAccountRegistered = { _ in }
+        onboarding.modalPresentationStyle = .fullScreen
+        present(onboarding, animated: true)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

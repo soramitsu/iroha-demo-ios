@@ -1,7 +1,7 @@
 import Foundation
 import KeychainAccess
 
-enum KeyBackupDestination: String, CaseIterable {
+enum KeyBackupDestination: String, CaseIterable, Codable {
     case manual
     case iCloud
     case googleSecureStorage
