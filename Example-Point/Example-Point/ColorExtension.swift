@@ -19,39 +19,31 @@
 import UIKit
 
 extension UIColor {
-    
-    class var iroha:UIColor {
-        get {
-            return UIColor(red: 228/255, green: 35/255, blue: 45/255, alpha: 1)
-        }
-    }
-    
-    class var irohaGreen:UIColor {
-        get {
-            return UIColor(red: 120/255, green: 255/255, blue: 131/255, alpha: 1)
-        }
-    }
-    
-    class var irohaYellow:UIColor {
-        get {
-            return UIColor(red: 255/255, green: 228/255, blue: 75/255, alpha: 1)
+    static var iroha: UIColor {
+        UIColor { trait in
+            if trait.userInterfaceStyle == .dark {
+                return UIColor(red: 228.0 / 255.0, green: 35.0 / 255.0, blue: 45.0 / 255.0, alpha: 1)
+            } else {
+                return UIColor(red: 0.11, green: 0.34, blue: 0.61, alpha: 1)
+            }
         }
     }
 
-}
+    static var irohaGreen: UIColor {
+        UIColor(red: 120.0 / 255.0, green: 255.0 / 255.0, blue: 131.0 / 255.0, alpha: 1)
+    }
 
-extension UIColor {
-    class func hex ( hex : String, alpha : CGFloat) -> UIColor {
-        let hexStr = hex.replacingOccurrences(of: "#", with: "") as NSString
-        let scanner = Scanner(string: hexStr as String)
-        var color: UInt32 = 0
-        if scanner.scanHexInt32(&color) {
-            let r = CGFloat((color & 0xFF0000) >> 16) / 255.0
-            let g = CGFloat((color & 0x00FF00) >> 8) / 255.0
-            let b = CGFloat(color & 0x0000FF) / 255.0
-            return UIColor(red:r,green:g,blue:b,alpha:alpha)
-        } else {
-            return UIColor.white
-        }
+    static var irohaYellow: UIColor {
+        UIColor(red: 255.0 / 255.0, green: 228.0 / 255.0, blue: 75.0 / 255.0, alpha: 1)
+    }
+
+    static func hex(hex: String, alpha: CGFloat) -> UIColor {
+        let sanitized = hex.replacingOccurrences(of: "#", with: "")
+        var color: UInt64 = 0
+        Scanner(string: sanitized).scanHexInt64(&color)
+        let r = CGFloat((color & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((color & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(color & 0x0000FF) / 255.0
+        return UIColor(red: r, green: g, blue: b, alpha: alpha)
     }
 }

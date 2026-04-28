@@ -5,6 +5,7 @@
 ## Build generated
 build/
 DerivedData/
+tmp*
 
 ## Various settings
 *.pbxuser
@@ -44,6 +45,10 @@ playground.xcworkspace
 # https://guides.cocoapods.org/using/using-cocoapods.html#should-i-check-the-pods-directory-into-source-control
 #
 Pods/
+.cocoapods/
+.gem/
+Vendor/NoritoBridge/NoritoBridge.xcframework/
+Vendor/NoritoBridge/NoritoBridge.xcframework.zip
 
 # Carthage
 #

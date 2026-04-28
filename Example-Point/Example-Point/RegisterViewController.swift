@@ -1,118 +1,104 @@
-/*
- Copyright Soramitsu Co., Ltd. 2016 All Rights Reserved.
- http://soramitsu.co.jp
- 
- Licensed under the Apache License, Version 2.0 (the "License");
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
- 
- http://www.apache.org/licenses/LICENSE-2.0
- 
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
- */
-
-
 import UIKit
 import TextFieldEffects
 import IrohaSwift
 import PMAlertController
 
-class RegisterViewController: UIViewController {
-    
-    @IBOutlet weak var backImg: UIImageView!
-    
+final class RegisterViewController: UIViewController {
 
-    @IBOutlet weak var nameField: HoshiTextField!
-    @IBOutlet weak var registerButton: UIButton!
+    @IBOutlet private weak var backImg: UIImageView!
+    @IBOutlet private weak var nameField: HoshiTextField!
+    @IBOutlet private weak var registerButton: UIButton!
 
-    
+    private let service = ToriiService.shared
+
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        installGlassBackground()
+        view.backgroundColor = .clear
+        backImg.superview?.backgroundColor = .clear
+        backImg.backgroundColor = .clear
+        registerButton.layer.borderColor = UIColor.clear.cgColor
+        registerButton.applyGlassButtonStyle()
+        nameField.applyGlassInputStyle()
+        nameField.enforceHeight(56)
+        nameField.placeholder = "エイリアス (name@dataspace)"
+        registerButton.enforceHeight(56)
+        backImg.alpha = 0.2
+        registerButton.addTarget(self, action: #selector(registerAccount), for: .touchUpInside)
         rotateView(targetView: backImg)
-        registerButton.layer.borderColor = UIColor.white.cgColor
-        registerButton.addTarget(self, action: #selector(Register), for: .touchUpInside)
+        applySoraFonts()
     }
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        registerButton.refreshGlassButtonStyleLayout()
     }
-    
-    func Register () {
-        
-        let keychain = KeychainManager.instance.keychain
-        let keypair = IrohaSwift.createKeyPair()
 
-        if nameField.text != "" {
-            if CheckReachability(host_name: "google.com") {
-                let alertVC = PMAlertController(title: "登録中", description: "登録しています", image: UIImage(named: ""), style: .alert)
-                self.present(alertVC, animated: true, completion: {
-                    APIManager.Register(name: self.nameField.text!, pub: keypair.publicKey, completionHandler: { JSON in
-                        print(JSON)
-                        if (JSON["status"] as! Int) == 200 {
-                            keychain["username"] = self.nameField.text
-                            keychain["publicKey"] = keypair.publicKey
-                            keychain["privateKey"] = keypair.privateKey
-                            keychain["uuid"] = JSON["uuid"] as! String
-                            alertVC.dismiss(animated: false, completion: nil)
-                            let storyboard: UIStoryboard = self.storyboard!
-                            let nextVC = storyboard.instantiateViewController(withIdentifier: "Contents")
-                            self.present(nextVC, animated: true, completion: nil)
-                        }else{
-                            alertVC.dismiss(animated: false, completion: self.errorCompletion(json: JSON))
-                        }
-                    })
-                })
-            }else{
-                let alertVC = PMAlertController(title: "接続エラー", description: "ネットワークを確認してね", image: UIImage(named: ""), style: .alert)
-                
-                alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-                }))
-                
-                self.present(alertVC, animated: true, completion: nil)
+    @objc private func registerAccount() {
+        guard let alias = AccountIdentity.normalizedAlias(nameField.text) else {
+            presentAlert(title: "エラー", message: "エイリアスは name@dataspace または name@domain.dataspace 形式で入力してください")
+            return
+        }
+
+        let progress = PMAlertController(title: "登録中", description: "鍵を生成しています", image: nil, style: .alert)
+        present(progress, animated: true)
+
+        Task { [weak self] in
+            guard let self else { return }
+            do {
+                let mnemonic = try MnemonicGenerator.shared.generate(wordCount: .twelve)
+                let material = try SoraNexusKeyMaterial(mnemonic: mnemonic)
+                let account = try await service.registerAccount(alias: alias, material: material)
+                KeychainManager.instance.backupDestinations = []
+                await MainActor.run {
+                    progress.dismiss(animated: true) {
+                        self.showSuccess(account: account)
+                    }
+                }
+            } catch {
+                await MainActor.run {
+                    progress.dismiss(animated: true) {
+                        self.presentAlert(title: "エラー", message: error.localizedDescription)
+                    }
+                }
             }
-        } else {
-            let alertVC = PMAlertController(title: "エラー", description: "ユーザー名を入力してください", image: UIImage(named: ""), style: .alert)
-            
-            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-            }))
-            
-            self.present(alertVC, animated: true, completion: nil)
         }
     }
-    
-    func errorCompletion(json: [String:Any]) -> (() -> ()) {
-        return {
-            let alertVC = PMAlertController(title: "エラー", description: "\(json["message"]!)", image: UIImage(named: ""), style: .alert)
-            
-            alertVC.addAction(PMAlertAction(title: "OK", style: .cancel, action: { () -> Void in
-            }))
-            self.present(alertVC, animated: true, completion: nil)
-        }
+
+    private func showSuccess(account: StoredAccount) {
+        let descriptionLines = [
+            "アカウントエイリアス:",
+            account.receiveAddressLiteral,
+            "",
+            "アカウントID:",
+            account.accountId,
+            "",
+            "Toriiに登録しました。ウォレットを開始できます。"
+        ]
+        let description = descriptionLines.joined(separator: "\n")
+        let alert = PMAlertController(title: "完了", description: description, image: nil, style: .alert)
+        alert.addAction(PMAlertAction(title: "アプリを開始", style: .default) { [weak self] in
+            guard let self else { return }
+            let storyboard = self.storyboard ?? UIStoryboard(name: "Main", bundle: nil)
+            if let contents = storyboard.instantiateViewController(withIdentifier: "Contents") as UIViewController? {
+                SubscriptionHubConfigurator.configureIfNeeded(contents)
+                self.present(contents, animated: true)
+            }
+        })
+        present(alert, animated: true)
     }
-    
-    func rotateView(targetView: UIImageView, duration: Double = 10.0) {
+
+    private func presentAlert(title: String, message: String) {
+        let alert = PMAlertController(title: title, description: message, image: nil, style: .alert)
+        alert.addAction(PMAlertAction(title: "OK", style: .cancel, action: nil))
+        present(alert, animated: true)
+    }
+
+    private func rotateView(targetView: UIImageView, duration: Double = 10.0) {
         UIImageView.animate(withDuration: duration, delay: 0.0, options: .curveLinear, animations: {
-            targetView.transform = targetView.transform.rotated(by: CGFloat(M_PI))
-        }) { finished in
-            self.rotateView(targetView: targetView, duration: duration)
+            targetView.transform = targetView.transform.rotated(by: CGFloat.pi)
+        }) { [weak self] _ in
+            self?.rotateView(targetView: targetView, duration: duration)
         }
     }
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
